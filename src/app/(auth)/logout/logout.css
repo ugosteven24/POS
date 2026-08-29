@@ -1,0 +1,280 @@
+
+.logout-page {
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 25px;
+
+  background: #f7f8fa;
+
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+
+/* ==========================================
+   CARD
+========================================== */
+
+.logout-card {
+  width: 100%;
+  max-width: 390px;
+
+  padding: 28px;
+
+  border: 1px solid #e1e5e9;
+  border-radius: 10px;
+
+  background: #fff;
+
+  box-shadow:
+    0 8px 30px rgba(30, 40, 50, .04);
+}
+
+
+/* ==========================================
+   ICON
+========================================== */
+
+.logout-icon {
+  width: 52px;
+  height: 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 18px;
+
+  border-radius: 50%;
+
+  background: #f5eeee;
+
+  color: #9b7472;
+}
+
+
+/* ==========================================
+   CONTENT
+========================================== */
+
+.logout-content {
+  text-align: center;
+}
+
+.logout-label {
+  margin-bottom: 7px;
+
+  color: #9fa6ac;
+
+  font-size: 6px;
+  font-weight: 700;
+
+  letter-spacing: 1px;
+}
+
+.logout-content h1 {
+  margin: 0;
+
+  color: #343c44;
+
+  font-size: 19px;
+  font-weight: 700;
+
+  letter-spacing: -.3px;
+}
+
+.logout-content p {
+  margin: 8px auto 0;
+
+  max-width: 280px;
+
+  color: #9ba3a9;
+
+  font-size: 7px;
+
+  line-height: 1.55;
+}
+
+
+/* ==========================================
+   SECURITY
+========================================== */
+
+.logout-security {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 9px;
+
+  margin-top: 22px;
+
+  padding: 11px;
+
+  border: 1px solid #e5e9ed;
+  border-radius: 7px;
+
+  background: #fafbfc;
+}
+
+.security-icon {
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 5px;
+
+  background: #eef3fb;
+
+  color: #687fa8;
+}
+
+.logout-security strong {
+  display: block;
+
+  margin: 1px 0 3px;
+
+  color: #737c84;
+
+  font-size: 5.8px;
+}
+
+.logout-security span {
+  display: block;
+
+  color: #a0a7ad;
+
+  font-size: 4.9px;
+
+  line-height: 1.45;
+}
+
+
+/* ==========================================
+   ACTIONS
+========================================== */
+
+.logout-actions {
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 8px;
+
+  margin-top: 18px;
+}
+
+.cancel-button,
+.logout-button {
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  border-radius: 5px;
+
+  font-family: inherit;
+
+  font-size: 5.8px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background .15s,
+    border-color .15s;
+}
+
+.cancel-button {
+  border: 1px solid #dfe3e7;
+
+  background: #fff;
+
+  color: #7d868d;
+}
+
+.cancel-button:hover:not(:disabled) {
+  background: #f7f8f9;
+}
+
+.logout-button {
+  border: 1px solid #9b7472;
+
+  background: #9b7472;
+
+  color: #fff;
+}
+
+.logout-button:hover:not(:disabled) {
+  background: #8d6967;
+}
+
+.cancel-button:disabled,
+.logout-button:disabled {
+  opacity: .65;
+
+  cursor: not-allowed;
+}
+
+
+/* ==========================================
+   SPINNER
+========================================== */
+
+.logout-spinner {
+  animation: spin 1s linear infinite;
+}
+
+.button-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+
+}
+
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 500px) {
+
+  .logout-page {
+    padding: 15px;
+  }
+
+  .logout-card {
+    padding: 22px;
+  }
+
+  .logout-actions {
+    grid-template-columns: 1fr;
+  }
+
+}
+

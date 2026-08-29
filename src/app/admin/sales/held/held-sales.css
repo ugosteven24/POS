@@ -1,0 +1,659 @@
+
+/* ============================================================
+   HELD SALES
+============================================================ */
+
+.held-sales-page {
+  min-height: 100vh;
+  padding: 24px;
+  background: #f5f6f8;
+  color: #1f2937;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+
+/* ============================================================
+   HEADER
+============================================================ */
+
+.held-sales-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.held-header-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+}
+
+.held-back-button {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  background: white;
+  color: #4b5563;
+  text-decoration: none;
+}
+
+.held-back-button:hover {
+  color: #2563eb;
+  background: #f9fafb;
+}
+
+.held-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 4px;
+  color: #9ca3af;
+  font-size: 11px;
+}
+
+.held-breadcrumb a {
+  color: #6b7280;
+  text-decoration: none;
+}
+
+.held-breadcrumb a:hover {
+  color: #2563eb;
+}
+
+.held-sales-header h1 {
+  margin: 0;
+  color: #111827;
+  font-size: 23px;
+  font-weight: 700;
+}
+
+.held-sales-header p {
+  margin: 4px 0 0;
+  color: #8b939e;
+  font-size: 11px;
+}
+
+.held-count {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 13px;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  background: white;
+  color: #2563eb;
+}
+
+.held-count > svg {
+  font-size: 14px;
+}
+
+.held-count strong {
+  display: block;
+  color: #111827;
+  font-size: 13px;
+}
+
+.held-count span {
+  display: block;
+  margin-top: 2px;
+  color: #9ca3af;
+  font-size: 9px;
+}
+
+
+/* ============================================================
+   SUMMARY CARDS
+============================================================ */
+
+.held-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.summary-card {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px;
+  border: 1px solid #e3e6ea;
+  border-radius: 9px;
+  background: white;
+}
+
+.summary-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.summary-icon.blue {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.summary-icon.orange {
+  background: #fff7ed;
+  color: #ea580c;
+}
+
+.summary-icon.green {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.summary-card span {
+  display: block;
+  color: #8b939e;
+  font-size: 10px;
+}
+
+.summary-card strong {
+  display: block;
+  margin-top: 3px;
+  color: #111827;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+
+/* ============================================================
+   CONTENT
+============================================================ */
+
+.held-content {
+  overflow: hidden;
+  border: 1px solid #e1e5e9;
+  border-radius: 9px;
+  background: white;
+}
+
+
+/* ============================================================
+   TOOLBAR
+============================================================ */
+
+.held-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px;
+  border-bottom: 1px solid #edf0f2;
+}
+
+.held-toolbar h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.held-toolbar span {
+  display: block;
+  margin-top: 3px;
+  color: #9ca3af;
+  font-size: 10px;
+}
+
+.held-search {
+  position: relative;
+  width: 310px;
+}
+
+.held-search > svg {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+.held-search input {
+  width: 100%;
+  height: 37px;
+  box-sizing: border-box;
+  padding: 0 35px 0 34px;
+  border: 1px solid #dfe3e8;
+  border-radius: 6px;
+  outline: none;
+  background: #fafbfc;
+  color: #374151;
+  font-family: inherit;
+  font-size: 11px;
+}
+
+.held-search input:focus {
+  border-color: #93c5fd;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.07);
+}
+
+.held-search button {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 4px;
+  background: #f3f4f6;
+  color: #6b7280;
+  cursor: pointer;
+  font-size: 9px;
+}
+
+
+/* ============================================================
+   TABLE
+============================================================ */
+
+.held-table-wrapper {
+  overflow-x: auto;
+}
+
+.held-table {
+  width: 100%;
+  min-width: 850px;
+  border-collapse: collapse;
+}
+
+.held-table th {
+  height: 42px;
+  padding: 0 16px;
+  border-bottom: 1px solid #edf0f2;
+  background: #fafafa;
+  color: #8b939e;
+  text-align: left;
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: 0.35px;
+  text-transform: uppercase;
+}
+
+.held-table td {
+  height: 70px;
+  padding: 0 16px;
+  border-bottom: 1px solid #f0f1f3;
+  white-space: nowrap;
+}
+
+.held-table tbody tr:hover {
+  background: #fcfcfd;
+}
+
+.held-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+
+/* ============================================================
+   REFERENCE
+============================================================ */
+
+.reference-cell {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.reference-icon {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  background: #fff7ed;
+  color: #ea580c;
+  font-size: 11px;
+}
+
+.reference-cell strong {
+  display: block;
+  color: #374151;
+  font-size: 11px;
+}
+
+.reference-cell span {
+  display: block;
+  margin-top: 3px;
+  color: #f59e0b;
+  font-size: 9px;
+}
+
+
+/* ============================================================
+   CUSTOMER
+============================================================ */
+
+.customer-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.customer-avatar {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #f3f4f6;
+  color: #6b7280;
+  font-size: 9px;
+}
+
+.customer-cell span {
+  color: #4b5563;
+  font-size: 11px;
+}
+
+.cashier-name {
+  color: #6b7280;
+  font-size: 11px;
+}
+
+
+/* ============================================================
+   ITEMS
+============================================================ */
+
+.items-badge {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 8px;
+  border-radius: 5px;
+  background: #f3f4f6;
+  color: #6b7280 !important;
+  font-size: 10px !important;
+}
+
+.items-badge svg {
+  font-size: 9px;
+}
+
+
+/* ============================================================
+   TOTAL
+============================================================ */
+
+.sale-total {
+  color: #111827;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+
+/* ============================================================
+   DATE
+============================================================ */
+
+.held-date strong {
+  display: block;
+  color: #4b5563;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.held-date span {
+  display: block;
+  margin-top: 3px;
+  color: #9ca3af;
+  font-size: 9px;
+}
+
+
+/* ============================================================
+   ACTIONS
+============================================================ */
+
+.sale-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.resume-button {
+  height: 31px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  border: 1px solid #bfdbfe;
+  border-radius: 5px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.resume-button:hover {
+  background: #dbeafe;
+}
+
+.resume-button svg {
+  font-size: 9px;
+}
+
+.delete-button {
+  width: 31px;
+  height: 31px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #fecaca;
+  border-radius: 5px;
+  background: #fef2f2;
+  color: #dc2626;
+  cursor: pointer;
+  font-size: 9px;
+}
+
+.delete-button:hover {
+  background: #fee2e2;
+}
+
+
+/* ============================================================
+   EMPTY STATE
+============================================================ */
+
+.held-empty {
+  min-height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.empty-icon {
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 13px;
+  border-radius: 50%;
+  background: #f3f4f6;
+  color: #9ca3af;
+  font-size: 20px;
+}
+
+.held-empty h3 {
+  margin: 0;
+  color: #4b5563;
+  font-size: 14px;
+}
+
+.held-empty p {
+  max-width: 300px;
+  margin: 6px 0 0;
+  color: #9ca3af;
+  font-size: 11px;
+}
+
+
+/* ============================================================
+   DELETE MODAL
+============================================================ */
+
+.held-modal-overlay {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.delete-modal {
+  width: 100%;
+  max-width: 390px;
+  padding: 28px;
+  border-radius: 10px;
+  background: white;
+  text-align: center;
+  box-shadow:
+    0 25px 70px rgba(0, 0, 0, 0.15);
+}
+
+.delete-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 13px;
+  border-radius: 50%;
+  background: #fef2f2;
+  color: #dc2626;
+  font-size: 17px;
+}
+
+.delete-modal h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 16px;
+}
+
+.delete-modal p {
+  margin: 8px 0 22px;
+  color: #6b7280;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.delete-modal p strong {
+  color: #374151;
+}
+
+.delete-modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.cancel-delete,
+.confirm-delete {
+  height: 37px;
+  padding: 0 14px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cancel-delete {
+  border: 1px solid #dfe3e8;
+  background: white;
+  color: #4b5563;
+}
+
+.cancel-delete:hover {
+  background: #f9fafb;
+}
+
+.confirm-delete {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #dc2626;
+  background: #dc2626;
+  color: white;
+}
+
+.confirm-delete:hover {
+  background: #b91c1c;
+}
+
+.confirm-delete svg {
+  font-size: 9px;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+
+@media (max-width: 800px) {
+
+  .held-sales-page {
+    padding: 15px;
+  }
+
+  .held-sales-header {
+    align-items: flex-start;
+  }
+
+  .held-count {
+    display: none;
+  }
+
+  .held-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .held-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .held-search {
+    width: 100%;
+  }
+
+}
+
