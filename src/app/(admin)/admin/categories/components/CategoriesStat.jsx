@@ -1,0 +1,161 @@
+
+
+
+
+import {
+  Search,
+  Plus,
+  FolderTree,
+  Package,
+  Pencil,
+  Trash2,
+  Eye,
+  CheckCircle2,
+  XCircle,
+  ChevronLeft,
+  ChevronRight,
+  MoreVertical,
+  X,
+  Save,
+} from "lucide-react";
+
+
+import { useToast } from "@/components/Toast";
+import getCategoryStats from "@/services/categories/get"
+
+export default async function Stats() {
+
+    const stats = await getCategoryStats()
+  
+
+  return (
+
+
+      <div className="category-stats">
+    
+    
+            <div className="category-stat-card">
+    
+              <div className="category-stat-icon blue">
+    
+                <FolderTree
+                  size={21}
+                />
+    
+              </div>
+    
+    
+              <div>
+    
+                <span>
+                  Total Categories
+                </span>
+    
+                <h2>
+                  {stats.total}
+                </h2>
+    
+                <small>
+                  All categories
+                </small>
+    
+              </div>
+    
+            </div>
+    
+    
+            <div className="category-stat-card">
+    
+              <div className="category-stat-icon green">
+    
+                <CheckCircle2
+                  size={21}
+                />
+    
+              </div>
+    
+    
+              <div>
+    
+                <span>
+                  Active
+                </span>
+    
+                <h2>
+                  {stats.active}
+                </h2>
+    
+                <small>
+                  On this page
+                </small>
+    
+              </div>
+    
+            </div>
+    
+    
+            <div className="category-stat-card">
+    
+              <div className="category-stat-icon orange">
+    
+                <XCircle
+                  size={21}
+                />
+    
+              </div>
+    
+    
+              <div>
+    
+                <span>
+                  Inactive
+                </span>
+    
+                <h2>
+                  {stats.inactive}
+                </h2>
+    
+                <small>
+                  On this page
+                </small>
+    
+              </div>
+    
+            </div>
+    
+    
+            {/* <div className="category-stat-card">
+    
+              <div className="category-stat-icon purple">
+    
+                <Package
+                  size={21}
+                />
+    
+              </div>
+    
+    
+              <div>
+    
+                <span>
+                  Products
+                </span>
+    
+                <h2>
+                  {stats.active}
+                </h2>
+    
+                <small>
+                  On this page
+                </small>
+    
+              </div>
+    
+            </div> */}
+    
+          </div>
+
+
+  );
+
+}

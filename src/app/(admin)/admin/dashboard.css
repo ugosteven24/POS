@@ -1,0 +1,614 @@
+/* ======================================================
+   DASHBOARD — STYLE SYSTEM
+   Shares the ledger palette used across the admin app:
+   paper neutrals, forest for primary/positive, gold
+   reserved for money, brick for warnings/negative trends,
+   and slate/steel as quiet neutrals for plain counts.
+   ====================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap");
+
+.dashboard-page {
+  --ink: #1b2420;
+  --ink-soft: #5b6b63;
+  --ink-faint: #8b978f;
+
+  --paper: #f6f7f5;
+  --surface: #ffffff;
+
+  --line: #e2e6e2;
+  --line-strong: #cdd4cd;
+
+  --forest: #0e5c46;
+  --forest-deep: #0a4735;
+  --forest-tint: #e7f1ec;
+
+  --gold: #8a651f;
+  --gold-tint: #fbf1de;
+
+  --brick: #b3402a;
+  --brick-tint: #f5e9e4;
+
+  --slate: #33413a;
+  --slate-tint: #eef0ed;
+
+  --steel: #33586b;
+  --steel-tint: #e9eff2;
+
+  --font-display: "Fraunces", "Iowan Old Style", ui-serif, Georgia, serif;
+  --font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  font-family: var(--font-ui);
+  color: var(--ink);
+  background: var(--paper);
+  padding: 28px 32px 56px;
+  min-height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dashboard-page * {
+  box-sizing: border-box;
+}
+
+.dashboard-page :focus-visible {
+  outline: 2px solid var(--forest);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-page * {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+  }
+}
+
+/* ======================================================
+   HEADER
+   ====================================================== */
+
+.dashboard-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 26px;
+  letter-spacing: -0.01em;
+}
+
+.dashboard-header p {
+  margin: 4px 0 0;
+  font-size: 13.5px;
+  color: var(--ink-soft);
+}
+
+.dashboard-date {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 8px 14px;
+  border-radius: 999px;
+}
+
+/* ======================================================
+   STATS
+   ====================================================== */
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.dashboard-stat-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.dashboard-stat-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.dashboard-stat-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard-stat-icon.forest { background: var(--forest-tint); color: var(--forest); }
+.dashboard-stat-icon.gold   { background: var(--gold-tint);   color: var(--gold); }
+.dashboard-stat-icon.slate  { background: var(--slate-tint);  color: var(--slate); }
+.dashboard-stat-icon.steel  { background: var(--steel-tint);  color: var(--steel); }
+
+.dashboard-stat-trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.dashboard-stat-trend.up {
+  color: var(--forest-deep);
+  background: var(--forest-tint);
+}
+
+.dashboard-stat-trend.down {
+  color: var(--brick);
+  background: var(--brick-tint);
+}
+
+.dashboard-stat-value {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.dashboard-stat-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.dashboard-stat-note {
+  font-size: 12px;
+  color: var(--ink-faint);
+  margin-bottom: 10px;
+}
+
+.dashboard-stat-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--forest);
+  text-decoration: none;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  margin-top: auto;
+}
+
+.dashboard-stat-link:hover {
+  color: var(--forest-deep);
+}
+
+/* ======================================================
+   PANEL — generic card used across the dashboard
+   ====================================================== */
+
+.dashboard-panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-panel.no-pad {
+  padding: 0;
+}
+
+.dashboard-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dashboard-panel.no-pad .dashboard-panel-header {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.dashboard-panel:not(.no-pad) .dashboard-panel-header {
+  margin-bottom: 18px;
+}
+
+.dashboard-panel-header h3 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-display);
+  font-size: 15.5px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.dashboard-panel-tool {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink-soft);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.dashboard-panel-tool:hover {
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+
+.dashboard-panel-link {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--forest);
+  text-decoration: none;
+}
+
+.dashboard-panel-link:hover {
+  color: var(--forest-deep);
+}
+
+/* ======================================================
+   GRID LAYOUTS
+   ====================================================== */
+
+.dashboard-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.dashboard-grid-2.wide-left {
+  grid-template-columns: 1.7fr 1fr;
+}
+
+/* ======================================================
+   CHART PLACEHOLDER
+   ====================================================== */
+
+.dashboard-chart-placeholder {
+  flex: 1;
+  min-height: 240px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 6px;
+  color: var(--ink-faint);
+  background: var(--paper);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-md);
+}
+
+.dashboard-chart-placeholder h4 {
+  margin: 8px 0 0;
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+.dashboard-chart-placeholder p {
+  margin: 0;
+  max-width: 280px;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.dashboard-panel-footer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.dashboard-panel-footer div {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.dashboard-panel-footer strong {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.dashboard-panel-footer span {
+  font-size: 11.5px;
+  color: var(--ink-faint);
+}
+
+/* ======================================================
+   PAYMENT METHODS
+   ====================================================== */
+
+.dashboard-payment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+}
+
+.dashboard-payment-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13.5px;
+}
+
+.dashboard-payment-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink-soft);
+}
+
+.dashboard-payment-row strong {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.dashboard-payment-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.dashboard-payment-total strong {
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ======================================================
+   TABLES (recent sales / top products / cashiers)
+   ====================================================== */
+
+.dashboard-table-wrapper {
+  overflow-x: auto;
+}
+
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 480px;
+}
+
+.dashboard-table thead tr {
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.dashboard-table th {
+  text-align: left;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+  padding: 12px 20px;
+  white-space: nowrap;
+}
+
+.dashboard-table tbody tr {
+  border-bottom: 1px solid var(--line);
+}
+
+.dashboard-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.dashboard-table tbody tr:hover {
+  background: var(--paper);
+}
+
+.dashboard-table td {
+  padding: 13px 20px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.dashboard-cell-strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.dashboard-cell-amount {
+  color: var(--ink);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.dashboard-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.dashboard-badge.paid {
+  background: var(--forest-tint);
+  color: var(--forest-deep);
+}
+
+.dashboard-badge.pending {
+  background: var(--gold-tint);
+  color: var(--gold);
+}
+
+/* ======================================================
+   LOW STOCK LIST
+   ====================================================== */
+
+.dashboard-stock-list {
+  list-style: none;
+  margin: 0;
+  padding: 6px 0;
+}
+
+.dashboard-stock-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.dashboard-stock-list li:last-child {
+  border-bottom: none;
+}
+
+.dashboard-stock-list li div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.dashboard-stock-list li strong {
+  font-size: 13px;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-stock-list li span:not(.dashboard-stock-badge) {
+  font-size: 11.5px;
+  color: var(--ink-faint);
+}
+
+.dashboard-stock-badge {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.dashboard-stock-badge.critical {
+  background: var(--brick-tint);
+  color: var(--brick);
+}
+
+.dashboard-stock-badge.low {
+  background: var(--gold-tint);
+  color: var(--gold);
+}
+
+/* ======================================================
+   QUICK LINKS
+   ====================================================== */
+
+.dashboard-quicklinks {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.dashboard-quicklink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 13px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.dashboard-quicklink.slate  { color: var(--slate); }
+.dashboard-quicklink.forest { color: var(--forest); }
+.dashboard-quicklink.steel  { color: var(--steel); }
+.dashboard-quicklink.brick  { color: var(--brick); }
+
+.dashboard-quicklink.slate:hover  { background: var(--slate-tint);  border-color: var(--slate); }
+.dashboard-quicklink.forest:hover { background: var(--forest-tint); border-color: var(--forest); }
+.dashboard-quicklink.steel:hover  { background: var(--steel-tint);  border-color: var(--steel); }
+.dashboard-quicklink.brick:hover  { background: var(--brick-tint);  border-color: var(--brick); }
+
+/* ======================================================
+   RESPONSIVE
+   ====================================================== */
+
+@media (max-width: 1080px) {
+  .dashboard-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-grid-2,
+  .dashboard-grid-2.wide-left {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-quicklinks {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-page {
+    padding: 20px 16px 40px;
+  }
+
+  .dashboard-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-panel-footer {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .dashboard-quicklinks {
+    grid-template-columns: 1fr;
+  }
+}

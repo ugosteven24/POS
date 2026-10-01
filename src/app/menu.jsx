@@ -313,7 +313,7 @@ export default function Home() {
                   </Link>
                 </li>
 
-                <li className="nav-item">
+                {/* <li className="nav-item">
                   <Link
                     href="/admin/sales/new"
                     className="nav-link"
@@ -321,7 +321,7 @@ export default function Home() {
                     <FaPlus className="nav-icon" />
                     <p>New Sale</p>
                   </Link>
-                </li>
+                </li> */}
 
                 <li className="nav-item">
                   <Link
@@ -349,6 +349,77 @@ export default function Home() {
 
 
             {/* ================= PRODUCTS ================= */}
+
+            <li className="nav-item">
+
+              <a href="#" className="nav-link">
+
+                <FaBox className="nav-icon" />
+
+                <p>
+                  Products
+                  <i className="fas fa-angle-left right"></i>
+                </p>
+
+              </a>
+
+              <ul className="nav nav-treeview">
+
+                <li className="nav-item">
+                  <Link
+                    href="/admin/products"
+                    className="nav-link"
+                  >
+                    <FaList className="nav-icon" />
+                    <p>All Products</p>
+                  </Link>
+                </li>
+
+                <li className="nav-item">
+                  <Link
+                    href="/admin/products/add"
+                    className="nav-link"
+                  >
+                    <FaPlus className="nav-icon" />
+                    <p>Add Product</p>
+                  </Link>
+                </li>
+
+                <li className="nav-item">
+                  <Link
+                    href="/admin/products/categories"
+                    className="nav-link"
+                  >
+                    <FaLayerGroup className="nav-icon" />
+                    <p>Categories</p>
+                  </Link>
+                </li>
+
+                <li className="nav-item">
+                  <Link
+                    href="/admin/products/brands"
+                    className="nav-link"
+                  >
+                    <FaTags className="nav-icon" />
+                    <p>Brands</p>
+                  </Link>
+                </li>
+
+                <li className="nav-item">
+                  <Link
+                    href="/admin/products/units"
+                    className="nav-link"
+                  >
+                    <FaBalanceScale className="nav-icon" />
+                    <p>Units</p>
+                  </Link>
+                </li>
+
+              </ul>
+
+            </li>
+
+             {/* ================= Categories ================= */}
 
             <li className="nav-item">
 
@@ -552,6 +623,47 @@ export default function Home() {
               </ul>
 
             </li>
+            {/* ================= SUPPLIERS ================= */}
+
+            <li className="nav-item">
+
+              <a href="#" className="nav-link">
+
+                <FaUsers className="nav-icon" />
+
+                <p>
+                  Suppliers
+                  <i className="fas fa-angle-left right"></i>
+                </p>
+
+              </a>
+
+              <ul className="nav nav-treeview">
+
+                <li className="nav-item">
+                  <Link
+                    href="/admin/suppliers"
+                    className="nav-link"
+                  >
+                    <FaList className="nav-icon" />
+                    <p>All Suppliers</p>
+                  </Link>
+                </li>
+
+                <li className="nav-item">
+                  <Link
+                    href="/admin/suppliers/add"
+                    className="nav-link"
+                  >
+                    <FaPlus className="nav-icon" />
+                    <p>Add Customer</p>
+                  </Link>
+                </li>
+
+              </ul>
+
+            </li>
+
 
 
             {/* ================= CUSTOMERS ================= */}
@@ -921,7 +1033,7 @@ export default function Home() {
             <li className="nav-item">
 
               <Link
-                href="/admin/logout"
+                href="/admin/signout"
                 className="nav-link"
               >
 
