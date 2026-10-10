@@ -29,10 +29,10 @@ export async function GetallData() {
         p.name AS product_name,
         
         p.sku,
-        p.barcode,
+        p.barcode AS product_barcode,
         p.description,
 
-        p.cost_price,
+        p.cost_price AS cost_price,
         p.selling_price,
 
         p.reorder_level,

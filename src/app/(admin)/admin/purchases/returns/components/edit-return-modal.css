@@ -1,0 +1,587 @@
+/* =========================================================
+   EDIT PURCHASE RETURN MODAL
+   Applies only to a .purchase-return-modal that directly contains
+   a <form>, so the read-only view modal and the delete modal keep
+   their own styling. No extra class is needed in the JSX.
+   Retheme by changing the --er-* variables below.
+   Requires :has() support: Chrome 105+, Safari 15.4+, Firefox 121+.
+========================================================= */
+
+.purchase-return-modal:has(> form) {
+  --er-primary: #4f46e5;
+  --er-primary-dark: #4338ca;
+  --er-primary-soft: #eef2ff;
+  --er-text: #0f172a;
+  --er-muted: #64748b;
+  --er-border: #e2e8f0;
+  --er-soft: #f8fafc;
+  --er-surface: #ffffff;
+  --er-danger: #dc2626;
+  --er-danger-soft: #fef2f2;
+  --er-radius: 14px;
+  --er-pad: 28px;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(860px, 100%);
+  max-height: 92vh;
+  overflow: hidden;
+  color: var(--er-text);
+  background: var(--er-surface);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.06),
+    0 24px 48px -12px rgba(15, 23, 42, 0.28),
+    0 48px 96px -24px rgba(15, 23, 42, 0.22);
+  animation: er-rise 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Overlay: only the one that wraps this modal (needs :has support:
+   Chrome 105+, Safari 15.4+, Firefox 121+) */
+
+.confirm-modal-overlay:has(> .purchase-return-modal > form) {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.55);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  animation: er-fade 0.18s ease-out;
+}
+
+@keyframes er-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes er-rise {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ---------- HEADER ---------- */
+
+.purchase-return-modal:has(> form) .purchase-return-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-shrink: 0;
+  padding: 22px var(--er-pad) 18px;
+  border-bottom: 1px solid var(--er-border);
+}
+
+.purchase-return-modal:has(> form) .purchase-return-header h2 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--er-text);
+}
+
+.purchase-return-modal:has(> form) .purchase-return-header p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--er-muted);
+}
+
+.purchase-return-modal:has(> form) .purchase-return-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  color: var(--er-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.purchase-return-modal:has(> form) .purchase-return-close:hover {
+  color: var(--er-text);
+  background: var(--er-soft);
+  border-color: var(--er-border);
+}
+
+/* ---------- PROFILE ---------- */
+
+.purchase-return-modal:has(> form) .purchase-return-profile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+  margin: 20px var(--er-pad) 0;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, var(--er-primary-soft), #f5f3ff);
+  border: 1px solid #e0e7ff;
+  border-radius: var(--er-radius);
+}
+
+.purchase-return-modal:has(> form) .purchase-return-avatar {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--er-primary), #7c3aed);
+  border-radius: 12px;
+  box-shadow: 0 6px 14px -4px rgba(79, 70, 229, 0.55);
+}
+
+.purchase-return-modal:has(> form) .purchase-return-profile h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.purchase-return-modal:has(> form) .purchase-return-profile span {
+  font-size: 13px;
+  color: var(--er-muted);
+}
+
+/* ---------- FORM (scrolls; actions stay pinned) ---------- */
+
+.purchase-return-modal:has(> form) form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 var(--er-pad);
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.purchase-return-modal:has(> form) form::-webkit-scrollbar { width: 8px; }
+.purchase-return-modal:has(> form) form::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 8px;
+}
+
+/* ---------- READ-ONLY DETAILS (used by EditReturnModal.jsx) ---------- */
+
+.purchase-return-modal:has(> form) .purchase-return-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.purchase-return-modal:has(> form) .return-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  background: var(--er-soft);
+  border: 1px solid var(--er-border);
+  border-radius: 12px;
+}
+
+.purchase-return-modal:has(> form) .return-detail span {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--er-muted);
+}
+
+.purchase-return-modal:has(> form) .return-detail strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--er-text);
+  overflow-wrap: anywhere;
+}
+
+.purchase-return-modal:has(> form) .return-modal-value {
+  color: var(--er-primary-dark);
+  font-size: 16px;
+}
+
+/* ---------- SECTIONS ---------- */
+
+.purchase-return-modal:has(> form) .form-section {
+  margin-top: 16px;
+  padding: 20px;
+  background: var(--er-surface);
+  border: 1px solid var(--er-border);
+  border-radius: var(--er-radius);
+}
+
+.purchase-return-modal:has(> form) .form-section > h2,
+.purchase-return-modal:has(> form) .section-header h2 {
+  margin: 0 0 16px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.purchase-return-modal:has(> form) .section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.purchase-return-modal:has(> form) .section-header h2 { margin-bottom: 4px; }
+
+.purchase-return-modal:has(> form) .section-header p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--er-muted);
+}
+
+/* ---------- FIELDS ---------- */
+
+.purchase-return-modal:has(> form) .form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 20px;
+}
+
+.purchase-return-modal:has(> form) .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.purchase-return-modal:has(> form) .form-group label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.purchase-return-modal:has(> form) input,
+.purchase-return-modal:has(> form) select,
+.purchase-return-modal:has(> form) textarea {
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  font-size: 14px;
+  color: var(--er-text);
+  background: var(--er-surface);
+  border: 1px solid #d5dbe5;
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.purchase-return-modal:has(> form) input,
+.purchase-return-modal:has(> form) select {
+  height: 42px;
+  padding: 0 12px;
+}
+
+.purchase-return-modal:has(> form) textarea {
+  min-height: 96px;
+  padding: 10px 12px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.purchase-return-modal:has(> form) input::placeholder,
+.purchase-return-modal:has(> form) textarea::placeholder { color: #94a3b8; }
+
+.purchase-return-modal:has(> form) input:hover,
+.purchase-return-modal:has(> form) select:hover,
+.purchase-return-modal:has(> form) textarea:hover { border-color: #b6c0d0; }
+
+.purchase-return-modal:has(> form) input:focus,
+.purchase-return-modal:has(> form) select:focus,
+.purchase-return-modal:has(> form) textarea:focus {
+  border-color: var(--er-primary);
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.14);
+}
+
+.purchase-return-modal:has(> form) input:disabled,
+.purchase-return-modal:has(> form) select:disabled,
+.purchase-return-modal:has(> form) textarea:disabled,
+.purchase-return-modal:has(> form) input[readonly] {
+  color: var(--er-muted);
+  background: var(--er-soft);
+  cursor: not-allowed;
+}
+
+.purchase-return-modal:has(> form) select {
+  padding-right: 36px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+.purchase-return-modal:has(> form) input[type="date"] { color-scheme: light; }
+
+/* ---------- ERROR ---------- */
+
+.purchase-return-modal:has(> form) .error-text {
+  display: block;
+  margin: 16px 0 0;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #b91c1c;
+  background: var(--er-danger-soft);
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+}
+
+/* ---------- ITEMS TABLE ---------- */
+
+.purchase-return-modal:has(> form) .return-items-table {
+  overflow-x: auto;
+  border: 1px solid var(--er-border);
+  border-radius: 12px;
+}
+
+.purchase-return-modal:has(> form) .return-items-table table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+}
+
+.purchase-return-modal:has(> form) .return-items-table th {
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--er-muted);
+  background: var(--er-soft);
+  border-bottom: 1px solid var(--er-border);
+}
+
+.purchase-return-modal:has(> form) .return-items-table td {
+  padding: 12px 14px;
+  font-size: 14px;
+  vertical-align: middle;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.purchase-return-modal:has(> form) .return-items-table tr:last-child td { border-bottom: 0; }
+.purchase-return-modal:has(> form) .return-items-table tbody tr:hover { background: #fafbff; }
+
+.purchase-return-modal:has(> form) .return-items-table input {
+  width: 110px;
+  height: 36px;
+  padding: 0 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.purchase-return-modal:has(> form) .icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  color: var(--er-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.purchase-return-modal:has(> form) .icon-btn:hover {
+  color: var(--er-text);
+  background: var(--er-soft);
+  border-color: var(--er-border);
+}
+
+.purchase-return-modal:has(> form) .icon-btn.danger:hover {
+  color: var(--er-danger);
+  background: var(--er-danger-soft);
+  border-color: #fecaca;
+}
+
+/* ---------- TOTALS ---------- */
+
+.purchase-return-modal:has(> form) .return-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(320px, 100%);
+  margin: 16px 0 0 auto;
+  padding: 16px 18px;
+  background: var(--er-soft);
+  border: 1px solid var(--er-border);
+  border-radius: var(--er-radius);
+}
+
+.purchase-return-modal:has(> form) .return-summary > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 13.5px;
+}
+
+.purchase-return-modal:has(> form) .return-summary span { color: var(--er-muted); }
+
+.purchase-return-modal:has(> form) .return-summary strong {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.purchase-return-modal:has(> form) .return-summary .grand-total {
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px dashed #cbd5e1;
+}
+
+.purchase-return-modal:has(> form) .return-summary .grand-total span {
+  font-weight: 600;
+  color: var(--er-text);
+}
+
+.purchase-return-modal:has(> form) .return-summary .grand-total strong {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--er-primary-dark);
+}
+
+/* ---------- BUTTONS ---------- */
+
+.purchase-return-modal:has(> form) .btn-primary,
+.purchase-return-modal:has(> form) .btn-secondary,
+.purchase-return-modal:has(> form) .purchase-return-edit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 18px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.15s, background 0.15s, border-color 0.15s;
+}
+
+.purchase-return-modal:has(> form) .btn-primary {
+  color: #fff;
+  background: linear-gradient(135deg, var(--er-primary), var(--er-primary-dark));
+  border: 1px solid var(--er-primary-dark);
+  box-shadow: 0 6px 16px -6px rgba(79, 70, 229, 0.7);
+}
+
+.purchase-return-modal:has(> form) .btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px -6px rgba(79, 70, 229, 0.75);
+}
+
+.purchase-return-modal:has(> form) .btn-primary:active:not(:disabled) { transform: translateY(0); }
+
+.purchase-return-modal:has(> form) .btn-secondary,
+.purchase-return-modal:has(> form) .purchase-return-edit {
+  color: #334155;
+  background: var(--er-surface);
+  border: 1px solid #d5dbe5;
+}
+
+.purchase-return-modal:has(> form) .btn-secondary:hover:not(:disabled),
+.purchase-return-modal:has(> form) .purchase-return-edit:hover {
+  background: var(--er-soft);
+  border-color: #b6c0d0;
+}
+
+.purchase-return-modal:has(> form) .btn-primary:disabled,
+.purchase-return-modal:has(> form) .btn-secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.purchase-return-modal:has(> form) .btn-primary:focus-visible,
+.purchase-return-modal:has(> form) .btn-secondary:focus-visible,
+.purchase-return-modal:has(> form) .icon-btn:focus-visible,
+.purchase-return-modal:has(> form) .purchase-return-close:focus-visible {
+  outline: 3px solid rgba(79, 70, 229, 0.35);
+  outline-offset: 2px;
+}
+
+/* ---------- ACTION BAR ----------
+   Inside the form: pinned to the bottom while the form scrolls.
+   Outside the form: a normal bar under it. */
+
+.purchase-return-modal:has(> form) .form-actions,
+.purchase-return-modal:has(> form) .purchase-return-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px var(--er-pad);
+  background: rgba(255, 255, 255, 0.92);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--er-border);
+}
+
+.purchase-return-modal:has(> form) form .form-actions,
+.purchase-return-modal:has(> form) form .purchase-return-footer {
+  position: sticky;
+  bottom: 0;
+  margin: 20px calc(var(--er-pad) * -1) 0;
+}
+
+.purchase-return-modal:has(> form) > .purchase-return-footer { flex-shrink: 0; }
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 640px) {
+  .confirm-modal-overlay:has(> .purchase-return-modal > form) {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .purchase-return-modal:has(> form) {
+    --er-pad: 18px;
+    width: 100%;
+    max-height: 94vh;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .purchase-return-modal:has(> form) .form-grid,
+  .purchase-return-modal:has(> form) .purchase-return-details {
+    grid-template-columns: 1fr;
+  }
+
+  .purchase-return-modal:has(> form) .section-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .purchase-return-modal:has(> form) .form-actions,
+  .purchase-return-modal:has(> form) .purchase-return-footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .purchase-return-modal:has(> form) .return-summary { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .purchase-return-modal:has(> form),
+  .confirm-modal-overlay:has(> .purchase-return-modal > form) { animation: none; }
+
+  .purchase-return-modal:has(> form) .btn-primary,
+  .purchase-return-modal:has(> form) .btn-secondary { transition: none; }
+}

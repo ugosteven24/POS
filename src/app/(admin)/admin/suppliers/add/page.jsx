@@ -18,7 +18,9 @@ import {
 
 import "./add-supplier.css";
 import { createSupplier } from "@/services/suppliers/get";
+import Swal from "sweetalert2";
 
+const BUTTON_COLOR = "#4f46e5"; // define this, or the alerts will throw
 export default function AddSupplier() {
   const [form, setForm] = useState({
     supplierName: "",
@@ -40,7 +42,7 @@ export default function AddSupplier() {
 
   const [errors, setErrors] = useState({});
   const [saved, setSaved] = useState(false);
-
+  const [saving, setSaving] = useState(false);
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -80,27 +82,56 @@ export default function AddSupplier() {
     return Object.keys(newErrors).length === 0;
   };
 
-const handleSubmit = async (e) => {
+ const handleSubmit = async (e) => {
   e.preventDefault();
 
+  if (saving) return;
+
   if (!validateForm()) {
+    Swal.fire({
+      icon: "warning",
+      title: "Check your entries",
+      text: "Please fix the highlighted fields and try again.",
+      confirmButtonColor: BUTTON_COLOR,
+    });
     return;
   }
 
-  const formData = new FormData(e.currentTarget);
+  try {
+    setSaving(true);
 
-  const result = await createSupplier(formData);
+    const formData = new FormData(e.currentTarget);
+    const result = await createSupplier(formData);
 
-  if (result.success) {
-    setSaved(true);
+    if (!result?.success) {
+      Swal.fire({
+        icon: "error",
+        title: "Could not save supplier",
+        text: result?.message || "Failed to create supplier.",
+        confirmButtonColor: BUTTON_COLOR,
+      });
+      return;
+    }
 
-    setTimeout(() => {
-      setSaved(false);
-    }, 3000);
+    await Swal.fire({
+      icon: "success",
+      title: "Supplier saved",
+      text: result.message || "The supplier has been added to your supplier list.",
+      confirmButtonColor: BUTTON_COLOR,
+    });
 
     resetForm();
-  } else {
-    alert(result.message);
+  } catch (error) {
+    console.error("Error creating supplier:", error);
+
+    Swal.fire({
+      icon: "error",
+      title: "Something went wrong",
+      text: "Failed to create supplier. Please try again.",
+      confirmButtonColor: BUTTON_COLOR,
+    });
+  } finally {
+    setSaving(false);
   }
 };
 
@@ -175,9 +206,10 @@ const handleSubmit = async (e) => {
             type="submit"
             form="supplier-form"
             className="save-button"
+            disabled={saving}
           >
             <Save size={14} />
-            Save Supplier
+            {saving ? "Saving..." : "Save Supplier"}
           </button>
 
         </div>
@@ -837,9 +869,10 @@ const handleSubmit = async (e) => {
             <button
               type="submit"
               className="sidebar-save"
+              disabled={saving}
             >
               <Save size={14} />
-              Save Supplier
+              {saving ? "Saving..." : "Save Supplier"}
             </button>
 
           </aside>

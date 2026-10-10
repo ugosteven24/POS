@@ -15,9 +15,12 @@ import {
   X,
   CheckCircle2,
 } from "lucide-react";
-
+import Swal from "sweetalert2";
 import "./add-customer.css";
 import { createCustomer } from "@/services/customers/customerService";
+import { useRouter } from "next/navigation";
+
+const BUTTON_COLOR = "#4f46e5"; // must be defined, or Swal calls will throw
 export default function AddCustomer() {
   const [form, setForm] = useState({
     firstName: "",
@@ -37,7 +40,8 @@ export default function AddCustomer() {
 
   const [errors, setErrors] = useState({});
   const [saved, setSaved] = useState(false);
-
+  const router = useRouter();
+  const [saving, setSaving] = useState(false);
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -79,98 +83,86 @@ export default function AddCustomer() {
     return Object.keys(newErrors).length === 0;
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!validate()) return;
+    if (saving) return;
 
-  try {
-
-    const result = await createCustomer({
-
-      name:
-        `${form.firstName} ${form.lastName}`.trim(),
-
-      phone:
-        form.phone,
-
-      email:
-        form.email,
-
-      address:
-        form.address,
-
-      city:
-        form.city,
-
-      state:
-        form.state,
-
-      postal_code:
-        form.postalCode,
-
-      opening_balance:
-        form.openingBalance,
-
-      notes:
-        form.notes,
-
-      customer_type:
-        form.customerType,
-
-      credit_limit:
-        form.creditLimit,
-
-      status:
-        form.status,
-    });
-
-
-    if (!result.success) {
-
-      console.error(
-        result.message
-      );
-
+    if (!validate()) {
+      Swal.fire({
+        icon: "warning",
+        title: "Check your entries",
+        text: "Please fix the highlighted fields and try again.",
+        confirmButtonColor: BUTTON_COLOR,
+      });
       return;
     }
 
+    try {
+      setSaving(true);
 
-    setSaved(true);
+      const result = await createCustomer({
+        name: `${form.firstName} ${form.lastName}`.trim(),
+        phone: form.phone,
+        email: form.email,
+        address: form.address,
+        city: form.city,
+        state: form.state,
+        postal_code: form.postalCode,
+        opening_balance: form.openingBalance,
+        notes: form.notes,
+        customer_type: form.customerType,
+        credit_limit: form.creditLimit,
+        status: form.status,
+      });
 
+      if (!result?.success) {
+        Swal.fire({
+          icon: "error",
+          title: "Could not save customer",
+          text: result?.message || "Failed to create customer.",
+          confirmButtonColor: BUTTON_COLOR,
+        });
+        return;
+      }
 
-    setTimeout(() => {
+      await Swal.fire({
+        icon: "success",
+        title: "Customer created",
+        text: result.message || "The customer has been added to your customer list.",
+        confirmButtonColor: BUTTON_COLOR,
+      });
 
-      window.location.href =
-        "/admin/customers";
+      router.push("/admin/customers");
+    } catch (error) {
+      console.error("Create customer error:", error);
 
-    }, 1500);
-
-
-  } catch (error) {
-
-    console.error(
-      "Create customer error:",
-      error
-    );
-
-  }
-};
+      Swal.fire({
+        icon: "error",
+        title: "Something went wrong",
+        text: "Failed to create customer. Please try again.",
+        confirmButtonColor: BUTTON_COLOR,
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const handleCancel = () => {
-    window.location.href = "/admin/customers";
+    router.push("/admin/customers");
   };
+
 
   const customerName =
     `${form.firstName} ${form.lastName}`.trim();
 
   const initials = customerName
     ? customerName
-        .split(" ")
-        .map((word) => word[0])
-        .join("")
-        .substring(0, 2)
-        .toUpperCase()
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
+      .substring(0, 2)
+      .toUpperCase()
     : "CU";
 
   return (
@@ -360,11 +352,10 @@ const handleSubmit = async (e) => {
                     </label>
 
                     <div
-                      className={`input-with-icon ${
-                        errors.phone
-                          ? "input-error"
-                          : ""
-                      }`}
+                      className={`input-with-icon ${errors.phone
+                        ? "input-error"
+                        : ""
+                        }`}
                     >
 
                       <Phone size={13} />
@@ -397,11 +388,10 @@ const handleSubmit = async (e) => {
                     </label>
 
                     <div
-                      className={`input-with-icon ${
-                        errors.email
-                          ? "input-error"
-                          : ""
-                      }`}
+                      className={`input-with-icon ${errors.email
+                        ? "input-error"
+                        : ""
+                        }`}
                     >
 
                       <Mail size={13} />
@@ -870,12 +860,11 @@ const handleSubmit = async (e) => {
                     <strong>
                       {form.city ||
                         form.state
-                        ? `${form.city || ""}${
-                            form.city &&
-                            form.state
-                              ? ", "
-                              : ""
-                          }${form.state || ""}`
+                        ? `${form.city || ""}${form.city &&
+                          form.state
+                          ? ", "
+                          : ""
+                        }${form.state || ""}`
                         : "Not provided"}
                     </strong>
                   </div>

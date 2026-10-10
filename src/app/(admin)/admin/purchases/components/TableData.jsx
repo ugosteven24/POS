@@ -6,9 +6,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-
-import { useToast } from "@/components/Toast";
-
 import {
   Search,
   Eye,
@@ -29,21 +26,19 @@ import {
   DollarSign,
   Loader2,
 } from "lucide-react";
-
 import { getPurchases, deactivatePurchase } from "@/services/purchases/get";
 
 
 export default function TableData() {
 
-  const toast = useToast();
+ 
 
 
   // ==========================================================
   // PURCHASES
   // ==========================================================
 
-  const [purchases, setPurchases] =
-    useState([]);
+  const [purchases, setPurchases] =useState([]);
 
 
   // ==========================================================
@@ -69,32 +64,26 @@ export default function TableData() {
   // INFINITE SCROLL
   // ==========================================================
 
-  const [page, setPage] =
-    useState(1);
+  const [page, setPage] =useState(1);
 
-  const [hasMore, setHasMore] =
-    useState(true);
+  const [hasMore, setHasMore] =useState(true);
 
   const LIMIT = 20;
 
-  const observerRef =
-    useRef(null);
+  const observerRef =useRef(null);
 
 
   // ==========================================================
   // FILTERS
   // ==========================================================
 
-  const [statusFilter, setStatusFilter] =
-    useState("All");
+  const [statusFilter, setStatusFilter] =useState("All");
 
-  const [paymentFilter, setPaymentFilter] =
-    useState("All");
+  const [paymentFilter, setPaymentFilter] =useState("All");
 
   const [dateFilter, setDateFilter] = useState("");
 
-  const [warehouseFilter, setWarehouseFilter] =
-    useState("All");
+  const [warehouseFilter, setWarehouseFilter] =useState("All");
 
 
   // ==========================================================
@@ -502,10 +491,7 @@ export default function TableData() {
           );
 
 
-          toast.error(
-            error.message ||
-            "Failed to load purchases."
-          );
+        
 
 
         } finally {
@@ -524,7 +510,7 @@ export default function TableData() {
         dateFilter,
         warehouseFilter,
         formatPurchase,
-        toast,
+      
       ]
     );
 
@@ -729,10 +715,7 @@ export default function TableData() {
       );
 
       if (!result?.success) {
-        toast.error(
-          result?.message ||
-          "Failed to delete purchase."
-        );
+     
 
         return;
       }
@@ -761,10 +744,7 @@ export default function TableData() {
       // Close action menu
       setShowMenu(null);
 
-      toast.success(
-        result.message ||
-        "Purchase deleted successfully."
-      );
+     
 
     } catch (error) {
       console.error(
@@ -772,9 +752,7 @@ export default function TableData() {
         error
       );
 
-      toast.error(
-        "Failed to delete purchase."
-      );
+     
 
     } finally {
       setDeleting(false);
@@ -791,11 +769,6 @@ export default function TableData() {
     if (
       purchases.length === 0
     ) {
-
-      toast.error(
-        "There are no purchases to export."
-      );
-
       return;
 
     }
@@ -1513,17 +1486,24 @@ export default function TableData() {
 
 
                             {/* EDIT */}
-
                             <button
-                              title="Edit"
-                              onClick={() =>
-                                alert(
-                                  `Edit ${purchase.id}`
-                                )
-                              }
+                              className="View"
+                              onClick={() => {
+                                setPurchaseId(purchase.id);
+                                setShowDeleteModal(
+                                  purchase.id
+                                );
+                              
+
+                              }}
                             >
 
-                              <Edit3 size={13} />
+                              <Trash2
+                              className="text-red"
+                                size={13}
+                              />
+
+                          
 
                             </button>
 

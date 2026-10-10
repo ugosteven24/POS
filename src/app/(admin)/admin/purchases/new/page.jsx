@@ -1,11 +1,6 @@
 "use client";
 
-import React, {
-  useEffect,
-  useMemo,
-  useState,
-  useActionState
-} from "react";
+import React, { useEffect, useMemo, useState, useActionState } from "react";
 import {
   ArrowLeft,
   Search,
@@ -27,38 +22,57 @@ import {
   StickyNote,
   CheckCircle2,
 } from "lucide-react";
-import { CreatePurchases } from "@/services/purchases/create";
-import "./new-purchase.css";
-import  getSuppliers  from "@/services/suppliers/get";
-import { GetallData, searchProducts} from "@/services/products/get"
 import toast from "react-hot-toast";
+import { CreatePurchases } from "@/services/purchases/create";
+import getSuppliers from "@/services/suppliers/get";
+import { GetallData } from "@/services/products/get";
+import { getpayment } from "@/services/paymentMethod/paymentService";
+import { getbranches } from "@/services/branch/branchService";
+import { getTaxes } from "@/services/taxes/get";
+import "./new-purchase.css";
+// add
+import Swal from "sweetalert2";
+
+const BUTTON_COLOR = "#4f46e5";
+// ==========================================
+// HELPERS
+// ==========================================
+
+const initialState = { success: false, message: "" };
+
+const money = (value) => `₦${Number(value || 0).toLocaleString("en-NG")}`;
+
+const todayLocal = () => {
+  const d = new Date();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${month}-${day}`;
+};
+
 // ==========================================
 // COMPONENT
 // ==========================================
-const initialState = {
-  success: false,
-  message: "",
-};
 
 export default function NewPurchase() {
-
+  // ---------- Data ----------
   const [products, setProducts] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
-  const [branches, setBranches] = useState([]); // FIX: was missing, caused ReferenceError
-
   const [loadError, setLoadError] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-
+  const [paymentMethod, setPaymentMethod] = useState([]);
+  const [branches, setBranches] = useState([]);
+  const [taxes, setTaxes] = useState([]);
+  // ---------- Form ----------
   const [supplierId, setSupplierId] = useState("");
-  const [warehouse, setWarehouse] = useState("Main Store");
+  const [paymentMethodID, setPaymentMethodID] = useState("");
+  const [branchId, setBranchId] = useState("");
+  const [taxId, setTaxId] = useState("");
 
-  const [purchaseDate, setPurchaseDate] = useState("2026-08-29");
+  const [warehouse, setWarehouse] = useState("Main Store");
+  const [purchaseDate, setPurchaseDate] = useState("");
   const [reference, setReference] = useState("");
 
-  const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [paymentStatus, setPaymentStatus] = useState("Unpaid");
   const [amountPaid, setAmountPaid] = useState(0);
-
   const [discount, setDiscount] = useState(0);
   const [shipping, setShipping] = useState(0);
   const [notes, setNotes] = useState("");
@@ -66,179 +80,147 @@ export default function NewPurchase() {
   const [cart, setCart] = useState([]);
   const [showProducts, setShowProducts] = useState(false);
 
-  const [state, formAction, saving] = useActionState(CreatePurchases, initialState);
+  const [state, formAction, saving] = useActionState(
+    CreatePurchases,
+    initialState
+  );
+
   // ==========================================
-  // MONEY
+  // LOAD DATA
   // ==========================================
 
-
-  // ========================================
-  // LOAD Suppliers
-  // ========================================
-  async function loadallsuppliers() {
-    const data = await getSuppliers();
-    setSuppliers(data);
-
-  }
   useEffect(() => {
+    setPurchaseDate(todayLocal());
 
-    async function loadData() {
-      loadallsuppliers()
+    const loadData = async () => {
+      try {
+        const [suppliersData, productsData, paymentMethodsData, branchesData, taxesData] = await Promise.all([
+          getSuppliers(),
+          GetallData(),
+          getpayment(),
+          getbranches(),
+          getTaxes(),
+        ]);
+        setSuppliers(Array.isArray(suppliersData) ? suppliersData : []);
+        setProducts(Array.isArray(productsData) ? productsData : []);
+        setPaymentMethod(Array.isArray(paymentMethodsData) ? paymentMethodsData : []);
+        setBranches(Array.isArray(branchesData) ? branchesData : []);
+        setTaxes(Array.isArray(taxesData) ? taxesData : []);
+      } catch (error) {
+        console.error("Failed to load purchase data:", error);
+        setLoadError("Could not load suppliers or products. Please refresh.");
+      }
+    };
 
-    }
-
-
-    loadallsuppliers();
-
+    loadData();
   }, []);
-  const money = (value) => `₦${Number(value || 0).toLocaleString()}`;
 
   // ==========================================
-  // FILTER PRODUCTS
+  // SERVER RESULT -> TOAST (never during render)
+  // ==========================================
+
+useEffect(() => {
+  if (state?.success) {
+    Swal.fire({
+      icon: "success",
+      title: "Purchase created",
+      text: state.message || "Purchase created successfully.",
+      confirmButtonColor: BUTTON_COLOR,
+    });
+    resetPurchase();
+  } else if (state?.message) {
+       Swal.fire({
+        icon: "error",
+        title: "Could not save product",
+        text: state.message,
+        confirmButtonText: "Try again",
+        confirmButtonColor: "#356bd8",
+      });
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [state]);
+
+  // ==========================================
+  // PRODUCT SEARCH
   // ==========================================
 
   const filteredProducts = useMemo(() => {
     const query = search.toLowerCase().trim();
     if (!query) return [];
 
-    return products.filter(
-      (product) =>
-        product.name?.toLowerCase().includes(query) ||
-        product.sku?.toLowerCase().includes(query) ||
-        product.barcode?.toLowerCase().includes(query)
-    );
-    // FIX: `products` was missing from deps, so the search ran against a stale
-    // (often empty) product list once data arrived asynchronously.
+    return products
+      .filter(
+        (product) =>
+          (product.product_name ?? product.name)
+            ?.toLowerCase()
+            .includes(query) ||
+          product.sku?.toLowerCase().includes(query) ||
+          (product.barcode ?? product.product_barcode)
+            ?.toLowerCase()
+            .includes(query)
+      )
+      .slice(0, 10);
   }, [search, products]);
 
-
-  const handleSearch = async (value) => {
-
-    setSearch(value);
-
-    const result = await searchProducts({
-      search: value,
-      limit: 20,
-    });
-
-    if (result.success) {
-      setProducts(result.data);
-      setNextCursor(result.nextCursor);
-      setHasMore(result.hasMore);
-    }
-
-  };
-
   // ==========================================
-  // ADD PRODUCT
+  // CART
   // ==========================================
 
   const addProduct = (product) => {
-    const existing = cart.find((item) => item.id === product.id);
+    setCart((prev) => {
+      const existing = prev.find((item) => item.id === product.id);
 
-    if (existing) {
-      setCart(
-        cart.map((item) =>
+      if (existing) {
+        return prev.map((item) =>
           item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: Number(item.quantity || 0) + 1 }
             : item
-        )
-      );
-    } else {
-      setCart([
-        ...cart,
+        );
+      }
+
+      return [
+        ...prev,
         {
-          ...product,
+          id: product.id,
+          product_name: product.product_name ?? product.name,
+          sku: product.sku,
+          product_barcode: product.barcode ?? product.product_barcode,
           quantity: 1,
-          unitCost: product.purchasePrice,
+          unitCost: Number(product.cost_price ?? product.purchase_price ?? 0),
         },
-      ]);
-    }
+      ];
+    });
 
     setSearch("");
     setShowProducts(false);
   };
 
-  // ==========================================
-  // UPDATE QUANTITY
-  // ==========================================
-
   const updateQuantity = (id, quantity) => {
     if (quantity === "") {
       setCart((prev) =>
-        prev.map((item) =>
-          item.id === id
-            ? { ...item, quantity: "" }
-            : item
-        )
+        prev.map((item) => (item.id === id ? { ...item, quantity: "" } : item))
       );
-
       return;
     }
 
     const value = Number(quantity);
-
-    if (!Number.isFinite(value) || value < 1) {
-      return;
-    }
+    if (!Number.isFinite(value) || value < 1) return;
 
     setCart((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? { ...item, quantity: value }
-          : item
-      )
+      prev.map((item) => (item.id === id ? { ...item, quantity: value } : item))
     );
   };
-
-  //=================================
-  ///LOAD ALL PRODUCTS
-  //======================
-  async function loadallproducts() {
-    const data = await GetallData();
-    setProducts(data);
-
-  }
-
-
-  useEffect(() => {
-    loadallproducts()
-
-  }, [])
-
-  const categoryOptions = useMemo(() => {
-    return [
-      {
-        name: "All Suppliers",
-        id: "",
-      },
-
-      ...suppliers.map((supplier) => ({
-        name: supplier.name,
-        id: supplier.id,
-      })),
-    ];
-  }, [suppliers]);
-  // ==========================================
-  // UPDATE COST
-  // ==========================================
 
   const updateCost = (id, unitCost) => {
-    setCart(
-      cart.map((item) =>
-        item.id === id
-          ? { ...item, unitCost: Number(unitCost) || 0 }
-          : item
+    setCart((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, unitCost: Number(unitCost) || 0 } : item
       )
     );
   };
 
-  // ==========================================
-  // REMOVE PRODUCT
-  // ==========================================
-
   const removeProduct = (id) => {
-    setCart(cart.filter((item) => item.id !== id));
+    setCart((prev) => prev.filter((item) => item.id !== id));
   };
 
   // ==========================================
@@ -246,9 +228,7 @@ export default function NewPurchase() {
   // ==========================================
 
   const subtotal = cart.reduce(
-    (total, item) =>
-      total +
-      Number(item.quantity || 0) * Number(item.unitCost || 0),
+    (sum, item) => sum + Number(item.quantity || 0) * Number(item.unitCost || 0),
     0
   );
 
@@ -257,19 +237,26 @@ export default function NewPurchase() {
     subtotal - Number(discount || 0) + Number(shipping || 0)
   );
 
-  const balance = Math.max(0, total - Number(amountPaid || 0));
+  // Derived, so it stays correct when the total changes after choosing "Paid".
+  const paidAmount =
+    paymentStatus === "Paid"
+      ? total
+      : paymentStatus === "Unpaid"
+        ? 0
+        : Math.min(Number(amountPaid || 0), total);
+
+  const balance = Math.max(0, total - paidAmount);
 
   // ==========================================
   // RESET
   // ==========================================
 
   const resetPurchase = () => {
-    setSupplierId(""); // FIX: previously reset an unused `supplier` field, so the
-    // supplier dropdown never actually cleared on Reset.
+    setSupplierId("");
     setWarehouse("Main Store");
+    setPurchaseDate(todayLocal());
     setReference("");
-    setPaymentMethod("Cash");
-    setNotes("");
+    setPaymentMethodID("");
     setPaymentStatus("Unpaid");
     setAmountPaid(0);
     setDiscount(0);
@@ -277,84 +264,52 @@ export default function NewPurchase() {
     setNotes("");
     setCart([]);
     setSearch("");
+    setShowProducts(false);
   };
 
   // ==========================================
-  // SAVE PURCHASE
+  // VALIDATE BEFORE THE SERVER ACTION RUNS
   // ==========================================
 
-  const savePurchase = () => {
-    // FIX: validation previously checked an unused `supplier` string state
-    // that was never populated by the form, so this always failed.
-    if (!supplierId) {
-      alert("Please select a supplier.");
-      return;
-    }
+  const handleSubmit = (e) => {
+    const fail = (message) => {
+      e.preventDefault();
+      toast.error(message);
+    };
 
-   
-
-    if (cart.length === 0) {
-      alert("Please add at least one product.");
-      return;
-    }
-
-    // FIX: don't rely on `amountPaid` state right after calling setAmountPaid
-    // (state updates aren't synchronous) — compute the final value locally.
-    const finalAmountPaid =
-      paymentStatus === "Paid"
-        ? total
-        : paymentStatus === "Unpaid"
-          ? 0
-          : Number(amountPaid || 0);
-    const finalBalance = Math.max(0, total - finalAmountPaid);
-
-    if (paymentStatus === "Paid") {
-      setAmountPaid(total);
-    }
-
-    const selectedSupplier = suppliers.find((s) => s.id === supplierId);
-
-    console.log({
-      supplierId,
-      supplierName: selectedSupplier?.name,
-      warehouse,
-      purchaseDate,
-      reference,
-      items: cart,
-      subtotal,
-      discount,
-      shipping,
-      total,
-      paymentMethod,
-      paymentStatus,
-      amountPaid: finalAmountPaid,
-      balance: finalBalance,
-      notes,
-    });
-
-    alert("Purchase created successfully.");
+    if (!supplierId) return fail("Please select a supplier.");
+    if (!purchaseDate) return fail("Please choose a purchase date.");
+    if (cart.length === 0) return fail("Please add at least one product.");
+    if (cart.some((item) => !(Number(item.quantity) > 0)))
+      return fail("Every product needs a quantity of at least 1.");
+    if (paymentStatus === "Partial" && !(paidAmount > 0))
+      return fail("Enter the amount paid for a partial payment.");
   };
 
+  const itemsPayload = cart.map((item) => ({
+    id: item.id,
+    product_id: item.id,
+    quantity: Number(item.quantity),
+    unitCost: Number(item.unitCost),
+    subtotal: Number(item.quantity) * Number(item.unitCost),
+  }));
+
   // ==========================================
-  // LOAD DATA
+  // RENDER
   // ==========================================
-
-
-
-
-
 
   return (
     <div className="new-purchase-page content-wrapper">
-
       {/* ======================================
           PAGE HEADER
       ====================================== */}
-
-
       <div className="new-purchase-header">
         <div>
-          <button className="back-button" onClick={() => window.history.back()}>
+          <button
+            type="button"
+            className="back-button"
+            onClick={() => window.history.back()}
+          >
             <ArrowLeft size={15} />
             Back
           </button>
@@ -371,28 +326,24 @@ export default function NewPurchase() {
         </div>
 
         <div className="new-purchase-actions">
-          <button className="reset-purchase" onClick={resetPurchase}>
+          <button
+            type="button"
+            className="reset-purchase"
+            onClick={resetPurchase}
+            disabled={saving}
+          >
             <RotateCcw size={14} />
             Reset
           </button>
-
 
           <button
             type="submit"
             form="product-form"
             className="save-purchase"
-            disabled={
-              saving
-
-            }
+            disabled={saving}
           >
-
             <Save size={17} />
-
-            {saving
-              ? "Saving..."
-              : "Save Purchase"}
-
+            {saving ? "Saving..." : "Save Purchase"}
           </button>
         </div>
       </div>
@@ -404,32 +355,20 @@ export default function NewPurchase() {
       )}
 
       {/* ======================================
-          MAIN GRID
+          FORM
       ====================================== */}
-      {state?.success && (
-        toast.success(state.message || "Purchase created successfully.")
-      )}
-
-      {state?.success === false && state?.message && (
-        toast.error(state.message || "Failed to create purchase.")
-      )}
       <form
         id="product-form"
         className="product-form"
         action={formAction}
+        onSubmit={handleSubmit}
       >
         <div className="new-purchase-layout">
-
           {/* ====================================
-            LEFT CONTENT
-        ==================================== */}
-
+              LEFT CONTENT
+          ==================================== */}
           <div className="purchase-main-column">
-
-            {/* ==================================
-              PURCHASE INFORMATION
-          ================================== */}
-
+            {/* PURCHASE INFORMATION */}
             <div className="purchase-card">
               <div className="purchase-card-header">
                 <div>
@@ -440,8 +379,6 @@ export default function NewPurchase() {
               </div>
 
               <div className="purchase-form-grid">
-
-                {/* SUPPLIER */}
                 <div className="purchase-field">
                   <label>
                     Supplier<span>*</span>
@@ -451,7 +388,6 @@ export default function NewPurchase() {
                     <select
                       value={supplierId}
                       onChange={(e) => setSupplierId(e.target.value)}
-
                     >
                       <option value="">Select supplier</option>
                       {suppliers.map((s) => (
@@ -464,7 +400,27 @@ export default function NewPurchase() {
                   </div>
                 </div>
 
-                {/* WAREHOUSE */}
+
+                <div className="purchase-field">
+                  <label>
+                    Branches<span>*</span>
+                  </label>
+                  <div className="select-wrapper">
+                    <User size={14} />
+                    <select
+                      value={branchId}
+                      onChange={(e) => setBranchId(e.target.value)}
+                    >
+                      <option value="">Select branch</option>
+                      {branches.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {s.name}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown size={13} />
+                  </div>
+                </div>
                 <div className="purchase-field">
                   <label>
                     Receive Into<span>*</span>
@@ -483,7 +439,6 @@ export default function NewPurchase() {
                   </div>
                 </div>
 
-                {/* DATE */}
                 <div className="purchase-field">
                   <label>
                     Purchase Date<span>*</span>
@@ -498,7 +453,6 @@ export default function NewPurchase() {
                   </div>
                 </div>
 
-                {/* REFERENCE */}
                 <div className="purchase-field">
                   <label>Reference / Invoice No.</label>
                   <div className="input-icon">
@@ -511,14 +465,10 @@ export default function NewPurchase() {
                     />
                   </div>
                 </div>
-
               </div>
             </div>
 
-            {/* ==================================
-              PRODUCTS
-          ================================== */}
-
+            {/* PRODUCTS */}
             <div className="purchase-card products-card">
               <div className="purchase-card-header">
                 <div>
@@ -528,7 +478,6 @@ export default function NewPurchase() {
                 <Package size={17} />
               </div>
 
-              {/* PRODUCT SEARCH */}
               <div className="product-search-container">
                 <div className="product-search">
                   <Search size={16} />
@@ -541,10 +490,15 @@ export default function NewPurchase() {
                       setSearch(e.target.value);
                       setShowProducts(true);
                     }}
+                    onKeyDown={(e) => {
+                      // Enter in the search box must not submit the purchase.
+                      if (e.key === "Enter") e.preventDefault();
+                    }}
                   />
 
                   {search && (
                     <button
+                      type="button"
                       onClick={() => {
                         setSearch("");
                         setShowProducts(false);
@@ -555,11 +509,11 @@ export default function NewPurchase() {
                   )}
                 </div>
 
-                {/* SEARCH RESULTS */}
                 {showProducts && search && filteredProducts.length > 0 && (
                   <div className="product-search-results">
                     {filteredProducts.map((product) => (
                       <button
+                        type="button"
                         key={product.id}
                         className="product-result"
                         onClick={() => addProduct(product)}
@@ -569,14 +523,14 @@ export default function NewPurchase() {
                         </div>
 
                         <div className="product-result-info">
-                          <strong>{product.name}</strong>
+                          <strong>{product.product_name ?? product.name}</strong>
                           <span>
                             SKU: {product.sku} • Stock: {product.stock}
                           </span>
                         </div>
 
                         <div className="product-result-price">
-                          {money(product.purchasePrice)}
+                          {money(product.cost_price ?? product.purchase_price)}
                         </div>
                       </button>
                     ))}
@@ -584,7 +538,6 @@ export default function NewPurchase() {
                 )}
               </div>
 
-              {/* CART TABLE */}
               {cart.length > 0 ? (
                 <div className="purchase-items-wrapper">
                   <table className="purchase-items-table">
@@ -607,8 +560,8 @@ export default function NewPurchase() {
                                 <Package size={15} />
                               </div>
                               <div>
-                                <strong>{item.name}</strong>
-                                <span>{item.sku}</span>
+                                <strong>{item.product_name}</strong>
+                                <span>{item.product_barcode || item.sku}</span>
                               </div>
                             </div>
                           </td>
@@ -618,7 +571,10 @@ export default function NewPurchase() {
                               <button
                                 type="button"
                                 onClick={() =>
-                                  updateQuantity(item.id, item.quantity - 1)
+                                  updateQuantity(
+                                    item.id,
+                                    Number(item.quantity || 0) - 1
+                                  )
                                 }
                               >
                                 <Minus size={11} />
@@ -636,7 +592,10 @@ export default function NewPurchase() {
                               <button
                                 type="button"
                                 onClick={() =>
-                                  updateQuantity(item.id, item.quantity + 1)
+                                  updateQuantity(
+                                    item.id,
+                                    Number(item.quantity || 0) + 1
+                                  )
                                 }
                               >
                                 <Plus size={11} />
@@ -649,6 +608,9 @@ export default function NewPurchase() {
                               <span>₦</span>
                               <input
                                 type="number"
+                                min="0"
+                                readOnly={true}
+                                step="0.01"
                                 value={item.unitCost}
                                 onChange={(e) =>
                                   updateCost(item.id, e.target.value)
@@ -659,7 +621,10 @@ export default function NewPurchase() {
 
                           <td>
                             <strong className="item-subtotal">
-                              {money(item.quantity * item.unitCost)}
+                              {money(
+                                Number(item.quantity || 0) *
+                                Number(item.unitCost || 0)
+                              )}
                             </strong>
                           </td>
 
@@ -683,15 +648,14 @@ export default function NewPurchase() {
                     <ShoppingCart size={22} />
                   </div>
                   <strong>No products added</strong>
-                  <span>Search for products above to add them to this purchase.</span>
+                  <span>
+                    Search for products above to add them to this purchase.
+                  </span>
                 </div>
               )}
             </div>
 
-            {/* ==================================
-              NOTES
-          ================================== */}
-
+            {/* NOTES */}
             <div className="purchase-card">
               <div className="purchase-card-header">
                 <div>
@@ -712,15 +676,9 @@ export default function NewPurchase() {
           </div>
 
           {/* ====================================
-            RIGHT SIDEBAR
-        ==================================== */}
-
+              RIGHT SIDEBAR
+          ==================================== */}
           <div className="purchase-side-column">
-
-            {/* ==================================
-              PURCHASE SUMMARY
-          ================================== */}
-
             <div className="purchase-card summary-card">
               <div className="summary-title">
                 <div className="summary-title-icon">
@@ -765,7 +723,25 @@ export default function NewPurchase() {
                     />
                   </div>
                 </div>
-              </div>
+
+                <div className="summary-input-row">
+                  <span>Tax</span>
+                  <div className="select-wrapper small-money-input">
+                    <select
+                      value={taxId}
+                      onChange={(e) => setTaxId(e.target.value)}
+                    >
+                      <option value="">Select Tax</option>
+                      {taxes.map((tax) => (
+                        <option key={tax.id} value={tax.id}>
+                          {tax.name}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown size={12} />
+                  </div>
+                </div>
+                </div>
 
               <div className="summary-total">
                 <span>Grand Total</span>
@@ -780,16 +756,17 @@ export default function NewPurchase() {
                 </div>
 
                 <div className="payment-field">
-                  <label>Payment Method</label>
+                  <label>Payment Method </label>
                   <div className="select-wrapper">
                     <select
-                      value={paymentMethod}
-                      onChange={(e) => setPaymentMethod(e.target.value)}
+                      value={paymentMethodID}
+                      onChange={(e) => setPaymentMethodID(e.target.value)}
                     >
-                      <option>Cash</option>
-                      <option>Bank Transfer</option>
-                      <option>POS</option>
-                      <option>Card</option>
+                      {paymentMethod.map((method) => (
+                        <option key={method.id} value={method.id}>
+                          {method.name}
+                        </option>
+                      ))}
                     </select>
                     <ChevronDown size={12} />
                   </div>
@@ -800,18 +777,7 @@ export default function NewPurchase() {
                   <div className="select-wrapper">
                     <select
                       value={paymentStatus}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setPaymentStatus(value);
-
-                        if (value === "Paid") {
-                          setAmountPaid(total);
-                        }
-
-                        if (value === "Unpaid") {
-                          setAmountPaid(0);
-                        }
-                      }}
+                      onChange={(e) => setPaymentStatus(e.target.value)}
                     >
                       <option>Unpaid</option>
                       <option>Partial</option>
@@ -828,8 +794,10 @@ export default function NewPurchase() {
                     <input
                       type="number"
                       min="0"
-                      value={amountPaid}
-                      disabled={paymentStatus === "Unpaid"}
+                      value={
+                        paymentStatus === "Partial" ? amountPaid : paidAmount
+                      }
+                      disabled={paymentStatus !== "Partial"}
                       onChange={(e) => setAmountPaid(e.target.value)}
                     />
                   </div>
@@ -841,16 +809,15 @@ export default function NewPurchase() {
                 </div>
               </div>
 
-              {/* SAVE */}
-              <button className="summary-save-button" onClick={savePurchase}>
+              <button
+                type="submit"
+                className="summary-save-button"
+                disabled={saving}
+              >
                 <CheckCircle2 size={15} />
-                Save Purchase
+                {saving ? "Saving..." : "Save Purchase"}
               </button>
             </div>
-
-            {/* ==================================
-              PURCHASE WORKFLOW
-          ================================== */}
 
             <div className="purchase-card quick-info-card">
               <div className="quick-info-title">
@@ -890,86 +857,27 @@ export default function NewPurchase() {
                 </div>
               </div>
             </div>
-
           </div>
         </div>
-        <input
-          type="hidden"
-          name="branch_id"
-          value=""
-        />
 
-        <input
-          type="hidden"
-          name="supplier_id"
-          value={supplierId}
-        />
-
-        <input
-          type="hidden"
-          name="invoice_number"
-          value={reference}
-        />
-
-        <input
-          type="hidden"
-          name="subtotal"
-          value={subtotal}
-        />
-
-        <input
-          type="hidden"
-          name="discount"
-          value={discount}
-        />
-
-        <input
-          type="hidden"
-          name="tax"
-          value="0"
-        />
-
-        <input
-          type="hidden"
-          name="total"
-          value={total}
-        />
-
-        <input
-          type="hidden"
-          name="paid_amount"
-          value={
-            paymentStatus === "Paid"
-              ? total
-              : paymentStatus === "Unpaid"
-                ? 0
-                : amountPaid
-          }
-        />
-
-        <input
-          type="hidden"
-          name="due_amount"
-          value={balance}
-        />
-
-        <input
-          type="hidden"
-          name="status"
-          value={paymentStatus}
-        />
-
-        <input
-          type="hidden"
-          name="purchase_date"
-          value={purchaseDate}
-        />
-
-        <input
-          type="hidden"
-          name="items"
-          value={JSON.stringify(cart)}
-        />
+        {/* ====================================
+            VALUES SENT TO THE SERVER ACTION
+        ==================================== */}
+        <input type="hidden" name="branch_id" value={branchId} />
+        <input type="hidden" name="warehouse" value={warehouse} />
+        <input type="hidden" name="supplier_id" value={supplierId} />
+        <input type="hidden" name="invoice_number" value={reference} />
+        <input type="hidden" name="purchase_date" value={purchaseDate} />
+        <input type="hidden" name="subtotal" value={subtotal} />
+        <input type="hidden" name="discount" value={Number(discount || 0)} />
+        <input type="hidden" name="shipping" value={Number(shipping || 0)} />
+        <input type="hidden" name="tax" value={taxId} />
+        <input type="hidden" name="total" value={total} />
+        <input type="hidden" name="payment_method" value={paymentMethodID} />
+        <input type="hidden" name="paid_amount" value={paidAmount} />
+        <input type="hidden" name="due_amount" value={balance} />
+        <input type="hidden" name="status" value={paymentStatus} />
+        <input type="hidden" name="items" value={JSON.stringify(itemsPayload)} />
       </form>
     </div>
   );

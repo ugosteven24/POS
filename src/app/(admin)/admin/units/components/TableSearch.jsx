@@ -15,7 +15,6 @@ import {
   Save,
 } from "lucide-react";
 
-import { useToast } from "@/components/Toast";
 import ConfirmModal from "@/components/DeleteConfirmModal";
 import EditModal from "../components/EditCategoryModal";
 import ViewCateModal from "../components/ViewModal";
@@ -28,7 +27,7 @@ import {
 } from "@/services/units/get";
 
 export default function TableUnits() {
-  const toast = useToast();
+
 
   // ========================================
   // STATE
@@ -76,9 +75,6 @@ export default function TableUnits() {
 
     } catch (error) {
       console.error("Error loading Units:", error);
-
-      toast.error?.("Failed to load Units");
-
       setUnits([]);
 
     } finally {
@@ -101,7 +97,6 @@ export default function TableUnits() {
     } catch (error) {
       console.error("Error searching Units:", error);
 
-      toast.error?.("Failed to search Units");
 
       setUnits([]);
 
@@ -124,8 +119,6 @@ export default function TableUnits() {
 
     } catch (error) {
       console.error("Error filtering brands:", error);
-
-      toast.error?.("Failed to filter brands");
 
       setUnits([]);
 
@@ -153,16 +146,11 @@ export default function TableUnits() {
       );
 
       if (!result?.success) {
-        toast.error?.(
-          result?.message || "Failed to delete Units"
-        );
-
+      
         return;
       }
 
-      toast.success?.(
-        result.message || "Units deleted successfully"
-      );
+  
 
       // Close modal
       setShowDeleteModal(false);
@@ -179,9 +167,7 @@ export default function TableUnits() {
         error
       );
 
-      toast.error?.(
-        "Failed to delete Units"
-      );
+  
 
     } finally {
       setDeleting(false);

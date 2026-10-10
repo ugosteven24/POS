@@ -54,17 +54,10 @@ export default function NewPurchaseReturn() {
   const [notes, setNotes] = useState("");
 
   const [errors, setErrors] = useState({});
-  const [selectedcustomerPurchaseID, setSelectedcustomerPurchaseID] =
-    useState("");
-  const [
-    selectedcustomerPurchaseSupplierID,
-    setSelectedcustomerPurchaseSupplierID,
-  ] = useState("");
+  const [selectedcustomerPurchaseID, setSelectedcustomerPurchaseID] =useState("");
+  const [selectedcustomerPurchaseSupplierID,setSelectedcustomerPurchaseSupplierID,] = useState("");
   const [productQuantity, setProductQuantity] = useState("");
-  const [state, formAction, pending] = useActionState(
-    createPurchaseReturn,
-    initialState,
-  );
+  const [state, formAction, pending] = useActionState(createPurchaseReturn,initialState,);
 
   async function getdataPurchases() {
     const data = await getPurchasesAll();
@@ -143,9 +136,9 @@ export default function NewPurchaseReturn() {
         items.map((item) =>
           item.id === product.id
             ? {
-                ...item,
-                quantity: Math.min(item.quantity + 1, item.cost_price),
-              }
+              ...item,
+              quantity: Math.min(item.quantity + 1, item.cost_price),
+            }
             : item,
         ),
       );
@@ -176,12 +169,12 @@ export default function NewPurchaseReturn() {
       items.map((item) =>
         item.id === id
           ? {
-              ...item,
-              quantity: Math.max(
-                1,
-                Math.min(Number(value), item.stock_quantity),
-              ),
-            }
+            ...item,
+            quantity: Math.max(
+              1,
+              Math.min(Number(value), item.stock_quantity),
+            ),
+          }
           : item,
       ),
     );
@@ -193,9 +186,9 @@ export default function NewPurchaseReturn() {
         .map((item) =>
           item.id === id
             ? {
-                ...item,
-                quantity: item.quantity - 1,
-              }
+              ...item,
+              quantity: item.quantity - 1,
+            }
             : item,
         )
         .filter((item) => item.quantity > 0),
@@ -207,9 +200,9 @@ export default function NewPurchaseReturn() {
       items.map((item) =>
         item.id === id
           ? {
-              ...item,
-              quantity: Math.min(item.quantity + 1, item.stock_quantity),
-            }
+            ...item,
+            quantity: Math.min(item.quantity + 1, item.stock_quantity),
+          }
           : item,
       ),
     );
@@ -225,9 +218,9 @@ export default function NewPurchaseReturn() {
         items.map((item) =>
           item.id === id
             ? {
-                ...item,
-                reason,
-              }
+              ...item,
+              reason,
+            }
             : item,
         ),
       setReturnReason(reason),
@@ -285,13 +278,19 @@ export default function NewPurchaseReturn() {
         value={JSON.stringify({
           purchaseId: selectedcustomerPurchaseID,
           supplierId: selectedcustomerPurchaseSupplierID,
-          returnDate,
+          return_number: selectedPurchase?.return_number || "",
+          total_amount: selectedPurchase?.amount || 0,
           reason: returnReason,
-          refundMethod,
-          items: returnItems,
-          subtotal,
-          totalQuantity,
-          notes,
+          notes: notes,
+          refund_method: refundMethod,
+          status: "pending",
+          returned_by: "Admin",
+          return_date: returnDate,
+          subtotal: subtotal,
+          total_quantity: totalQuantity,
+          
+          
+          
         })}
       />
       <div className="new-return-page  content-wrapper">
@@ -351,9 +350,9 @@ export default function NewPurchaseReturn() {
                 </div>
 
                 <div>
-                   <h1 className="text-[red]">{state.message}</h1>
+                  <h1 className="text-[red]">{state.message}</h1>
                   <h2>Purchase Information</h2>
-                 
+
 
                   <p>
                     Select the purchase from which products are being returned.
@@ -463,7 +462,7 @@ export default function NewPurchaseReturn() {
                     <div className="selected-purchase-info amount">
                       <span>Purchase Total</span>
 
-                      <strong>{formatCurrency(selectedPurchase.amount)}</strong>
+                      <strong>{formatCurrency(selectedPurchase.subtotal)}</strong>
                     </div>
                   </div>
                 )}

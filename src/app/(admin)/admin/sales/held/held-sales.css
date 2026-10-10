@@ -1,276 +1,362 @@
+/* ======================================================
+   HELD SALES — STYLE SYSTEM (bold / professional)
+   Moved onto the shared ledger palette so it matches the
+   dashboard, sales and new-sale pages: deep forest header
+   band, firm borders, solid icons, dark table header.
+   Gold = held/pending and money, brick = delete,
+   forest = primary (resume), slate/steel = neutrals.
+   ====================================================== */
 
-/* ============================================================
-   HELD SALES
-============================================================ */
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Inter:wght@400;500;600;700;800&display=swap");
+
+/* tokens are shared with the delete modal in case it renders outside the page wrapper */
+.held-sales-page,
+.held-modal-overlay {
+  --ink: #111a16;
+  --ink-soft: #46554d;
+  --ink-faint: #75837b;
+
+  --paper: #eef1ee;
+  --surface: #ffffff;
+
+  --line: #d9dfd9;
+  --line-strong: #b9c3bb;
+
+  --forest: #0b5a43;
+  --forest-deep: #062f23;
+  --forest-tint: #dcece4;
+
+  --gold: #7a5612;
+  --gold-tint: #f8e8c4;
+
+  --brick: #a8331e;
+  --brick-tint: #f4ddd6;
+
+  --slate: #1f2a25;
+  --slate-tint: #e4e8e5;
+
+  --steel: #274b5e;
+  --steel-tint: #dde8ee;
+
+  --font-display: "Fraunces", "Iowan Old Style", ui-serif, Georgia, serif;
+  --font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+
+  --shadow-card: 0 1px 2px rgba(17, 26, 22, 0.06), 0 4px 14px rgba(17, 26, 22, 0.05);
+}
 
 .held-sales-page {
   min-height: 100vh;
-  padding: 24px;
-  background: #f5f6f8;
-  color: #1f2937;
-  font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
+  padding: 24px 28px 56px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
 }
 
+.held-sales-page * {
+  box-sizing: border-box;
+}
 
-/* ============================================================
-   HEADER
-============================================================ */
+.held-sales-page :focus-visible,
+.held-modal-overlay :focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .held-sales-page *,
+  .held-modal-overlay * {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+  }
+}
+
+/* ======================================================
+   HEADER — the one bold element
+   ====================================================== */
 
 .held-sales-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
   margin-bottom: 22px;
+  padding: 24px 28px;
+  background: var(--forest-deep);
+  color: #ffffff;
+  border-radius: var(--radius-lg);
+  border-bottom: 4px solid var(--gold-tint);
 }
 
 .held-header-left {
   display: flex;
   align-items: flex-start;
-  gap: 13px;
+  gap: 16px;
 }
 
 .held-back-button {
-  width: 38px;
-  height: 38px;
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 2px;
-  border: 1px solid #e1e5e9;
-  border-radius: 8px;
-  background: white;
-  color: #4b5563;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: #ffffff;
   text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .held-back-button:hover {
-  color: #2563eb;
-  background: #f9fafb;
+  background: #ffffff;
+  border-color: #ffffff;
+  color: var(--forest-deep);
 }
 
 .held-breadcrumb {
   display: flex;
   align-items: center;
   gap: 7px;
-  margin-bottom: 4px;
-  color: #9ca3af;
-  font-size: 11px;
+  margin-bottom: 6px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
 }
 
 .held-breadcrumb a {
-  color: #6b7280;
+  color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
 }
 
 .held-breadcrumb a:hover {
-  color: #2563eb;
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .held-sales-header h1 {
   margin: 0;
-  color: #111827;
-  font-size: 23px;
-  font-weight: 700;
+  font-family: var(--font-display);
+  color: #ffffff;
+  font-size: 30px;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
 .held-sales-header p {
-  margin: 4px 0 0;
-  color: #8b939e;
-  font-size: 11px;
+  margin: 6px 0 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 13.5px;
 }
 
 .held-count {
   display: flex;
   align-items: center;
-  gap: 9px;
-  padding: 9px 13px;
-  border: 1px solid #e1e5e9;
-  border-radius: 8px;
-  background: white;
-  color: #2563eb;
+  gap: 10px;
+  padding: 10px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--gold-tint);
 }
 
 .held-count > svg {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .held-count strong {
   display: block;
-  color: #111827;
-  font-size: 13px;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
 .held-count span {
   display: block;
   margin-top: 2px;
-  color: #9ca3af;
-  font-size: 9px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 11.5px;
 }
 
-
-/* ============================================================
+/* ======================================================
    SUMMARY CARDS
-============================================================ */
+   ====================================================== */
 
 .held-summary {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  margin-bottom: 18px;
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
-.summary-card {
-  min-height: 72px;
+.held-sales-page .summary-card {
+  min-height: 84px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 15px;
-  border: 1px solid #e3e6ea;
-  border-radius: 9px;
-  background: white;
+  gap: 14px;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--ink);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
 }
 
-.summary-icon {
-  width: 40px;
-  height: 40px;
+.held-sales-page .summary-card:has(.summary-icon.blue)   { border-top-color: var(--slate); }
+.held-sales-page .summary-card:has(.summary-icon.orange) { border-top-color: var(--gold); }
+.held-sales-page .summary-card:has(.summary-icon.green)  { border-top-color: var(--forest); }
+
+.held-sales-page .summary-icon {
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: var(--radius-sm);
+  color: #ffffff;
+  font-size: 16px;
 }
 
-.summary-icon.blue {
-  background: #eff6ff;
-  color: #2563eb;
-}
+.held-sales-page .summary-icon.blue   { background: var(--slate); }
+.held-sales-page .summary-icon.orange { background: var(--gold); }
+.held-sales-page .summary-icon.green  { background: var(--forest); }
 
-.summary-icon.orange {
-  background: #fff7ed;
-  color: #ea580c;
-}
-
-.summary-icon.green {
-  background: #ecfdf5;
-  color: #059669;
-}
-
-.summary-card span {
+.held-sales-page .summary-card span {
   display: block;
-  color: #8b939e;
-  font-size: 10px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 600;
 }
 
-.summary-card strong {
+.held-sales-page .summary-card strong {
   display: block;
   margin-top: 3px;
-  color: #111827;
-  font-size: 17px;
+  font-family: var(--font-display);
+  color: var(--ink);
+  font-size: 26px;
+  line-height: 1.1;
   font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
 }
 
-
-/* ============================================================
+/* ======================================================
    CONTENT
-============================================================ */
+   ====================================================== */
 
 .held-content {
   overflow: hidden;
-  border: 1px solid #e1e5e9;
-  border-radius: 9px;
-  background: white;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
 }
 
-
-/* ============================================================
+/* ======================================================
    TOOLBAR
-============================================================ */
+   ====================================================== */
 
 .held-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 18px;
-  border-bottom: 1px solid #edf0f2;
+  padding: 18px 20px;
+  border-bottom: 2px solid var(--ink);
 }
 
 .held-toolbar h2 {
   margin: 0;
-  color: #111827;
-  font-size: 14px;
-  font-weight: 650;
+  font-family: var(--font-display);
+  color: var(--ink);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .held-toolbar span {
   display: block;
   margin-top: 3px;
-  color: #9ca3af;
-  font-size: 10px;
+  color: var(--ink-soft);
+  font-size: 12.5px;
 }
 
 .held-search {
   position: relative;
-  width: 310px;
+  width: 330px;
 }
 
 .held-search > svg {
   position: absolute;
   top: 50%;
-  left: 12px;
+  left: 13px;
   transform: translateY(-50%);
-  color: #9ca3af;
-  font-size: 12px;
+  color: var(--ink-soft);
+  font-size: 13px;
 }
 
 .held-search input {
   width: 100%;
-  height: 37px;
+  height: 42px;
   box-sizing: border-box;
-  padding: 0 35px 0 34px;
-  border: 1px solid #dfe3e8;
-  border-radius: 6px;
+  padding: 0 38px 0 36px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
   outline: none;
-  background: #fafbfc;
-  color: #374151;
+  background: var(--surface);
+  color: var(--ink);
   font-family: inherit;
-  font-size: 11px;
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.held-search input::placeholder {
+  color: var(--ink-faint);
+  font-weight: 400;
 }
 
 .held-search input:focus {
-  border-color: #93c5fd;
-  background: white;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.07);
+  border-color: var(--forest);
+  box-shadow: 0 0 0 3px var(--forest-tint);
 }
 
 .held-search button {
   position: absolute;
   top: 50%;
   right: 8px;
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
   transform: translateY(-50%);
   border: 0;
-  border-radius: 4px;
-  background: #f3f4f6;
-  color: #6b7280;
+  border-radius: var(--radius-sm);
+  background: var(--slate-tint);
+  color: var(--ink-soft);
   cursor: pointer;
-  font-size: 9px;
+  font-size: 11px;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
+.held-search button:hover {
+  background: var(--ink);
+  color: #ffffff;
+}
 
-/* ============================================================
+/* ======================================================
    TABLE
-============================================================ */
+   ====================================================== */
 
 .held-table-wrapper {
   overflow-x: auto;
@@ -283,156 +369,165 @@
 }
 
 .held-table th {
-  height: 42px;
-  padding: 0 16px;
-  border-bottom: 1px solid #edf0f2;
-  background: #fafafa;
-  color: #8b939e;
+  height: 46px;
+  padding: 0 18px;
+  background: var(--slate);
+  color: #ffffff;
   text-align: left;
-  font-size: 9px;
-  font-weight: 650;
-  letter-spacing: 0.35px;
-  text-transform: uppercase;
-}
-
-.held-table td {
-  height: 70px;
-  padding: 0 16px;
-  border-bottom: 1px solid #f0f1f3;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
   white-space: nowrap;
 }
 
+.held-table td {
+  height: 72px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+.held-table tbody tr {
+  transition: background 0.12s ease;
+}
+
+.held-table tbody tr:nth-child(even) {
+  background: #f7f9f7;
+}
+
 .held-table tbody tr:hover {
-  background: #fcfcfd;
+  background: var(--forest-tint);
 }
 
 .held-table tbody tr:last-child td {
   border-bottom: 0;
 }
 
-
-/* ============================================================
+/* ======================================================
    REFERENCE
-============================================================ */
+   ====================================================== */
 
 .reference-cell {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 11px;
 }
 
 .reference-icon {
-  width: 35px;
-  height: 35px;
+  width: 38px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 7px;
-  background: #fff7ed;
-  color: #ea580c;
-  font-size: 11px;
+  border-radius: var(--radius-sm);
+  background: var(--gold);
+  color: #ffffff;
+  font-size: 13px;
 }
 
 .reference-cell strong {
   display: block;
-  color: #374151;
-  font-size: 11px;
+  color: var(--forest);
+  font-size: 13.5px;
+  font-weight: 700;
 }
 
 .reference-cell span {
   display: block;
   margin-top: 3px;
-  color: #f59e0b;
-  font-size: 9px;
+  color: var(--gold);
+  font-size: 11.5px;
+  font-weight: 600;
 }
 
-
-/* ============================================================
+/* ======================================================
    CUSTOMER
-============================================================ */
+   ====================================================== */
 
 .customer-cell {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
-.customer-avatar {
-  width: 28px;
-  height: 28px;
+.held-sales-page .customer-avatar {
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   border-radius: 50%;
-  background: #f3f4f6;
-  color: #6b7280;
-  font-size: 9px;
+  background: var(--steel);
+  color: #ffffff;
+  font-size: 11.5px;
+  font-weight: 700;
 }
 
 .customer-cell span {
-  color: #4b5563;
-  font-size: 11px;
+  color: var(--ink);
+  font-size: 13.5px;
+  font-weight: 600;
 }
 
 .cashier-name {
-  color: #6b7280;
-  font-size: 11px;
+  color: var(--ink-soft);
+  font-size: 13.5px;
+  font-weight: 500;
 }
 
-
-/* ============================================================
+/* ======================================================
    ITEMS
-============================================================ */
+   ====================================================== */
 
 .items-badge {
   display: inline-flex !important;
   align-items: center;
-  gap: 5px;
-  padding: 5px 8px;
-  border-radius: 5px;
-  background: #f3f4f6;
-  color: #6b7280 !important;
-  font-size: 10px !important;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--slate);
+  color: #ffffff !important;
+  font-size: 12px !important;
+  font-weight: 700;
 }
 
 .items-badge svg {
-  font-size: 9px;
+  font-size: 11px;
 }
 
-
-/* ============================================================
+/* ======================================================
    TOTAL
-============================================================ */
+   ====================================================== */
 
 .sale-total {
-  color: #111827;
-  font-size: 12px;
-  font-weight: 650;
+  color: var(--gold);
+  font-size: 14.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
-
-/* ============================================================
+/* ======================================================
    DATE
-============================================================ */
+   ====================================================== */
 
 .held-date strong {
   display: block;
-  color: #4b5563;
-  font-size: 10px;
+  color: var(--ink);
+  font-size: 12.5px;
   font-weight: 600;
 }
 
 .held-date span {
   display: block;
   margin-top: 3px;
-  color: #9ca3af;
-  font-size: 9px;
+  color: var(--ink-soft);
+  font-size: 11.5px;
 }
 
-
-/* ============================================================
+/* ======================================================
    ACTIONS
-============================================================ */
+   ====================================================== */
 
 .sale-actions {
   display: flex;
@@ -441,51 +536,54 @@
 }
 
 .resume-button {
-  height: 31px;
+  height: 36px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 0 10px;
-  border: 1px solid #bfdbfe;
-  border-radius: 5px;
-  background: #eff6ff;
-  color: #2563eb;
+  gap: 7px;
+  padding: 0 14px;
+  border: 1px solid var(--forest);
+  border-radius: var(--radius-sm);
+  background: var(--forest);
+  color: #ffffff;
   font-family: inherit;
-  font-size: 10px;
-  font-weight: 600;
+  font-size: 12.5px;
+  font-weight: 700;
   cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
 .resume-button:hover {
-  background: #dbeafe;
+  background: var(--forest-deep);
+  border-color: var(--forest-deep);
 }
 
 .resume-button svg {
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .delete-button {
-  width: 31px;
-  height: 31px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #fecaca;
-  border-radius: 5px;
-  background: #fef2f2;
-  color: #dc2626;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: var(--brick-tint);
+  color: var(--brick);
   cursor: pointer;
-  font-size: 9px;
+  font-size: 12px;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .delete-button:hover {
-  background: #fee2e2;
+  background: var(--brick);
+  color: #ffffff;
 }
 
-
-/* ============================================================
+/* ======================================================
    EMPTY STATE
-============================================================ */
+   ====================================================== */
 
 .held-empty {
   min-height: 350px;
@@ -496,36 +594,39 @@
   text-align: center;
 }
 
-.empty-icon {
-  width: 58px;
-  height: 58px;
+.held-sales-page .empty-icon {
+  width: 62px;
+  height: 62px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 13px;
+  margin-bottom: 14px;
   border-radius: 50%;
-  background: #f3f4f6;
-  color: #9ca3af;
-  font-size: 20px;
+  background: var(--paper);
+  border: 1px dashed var(--line-strong);
+  color: var(--ink-faint);
+  font-size: 22px;
 }
 
 .held-empty h3 {
   margin: 0;
-  color: #4b5563;
-  font-size: 14px;
+  font-family: var(--font-display);
+  color: var(--ink);
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .held-empty p {
-  max-width: 300px;
+  max-width: 320px;
   margin: 6px 0 0;
-  color: #9ca3af;
-  font-size: 11px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.5;
 }
 
-
-/* ============================================================
+/* ======================================================
    DELETE MODAL
-============================================================ */
+   ====================================================== */
 
 .held-modal-overlay {
   position: fixed;
@@ -535,48 +636,53 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgba(15, 23, 42, 0.45);
+  background: rgba(6, 47, 35, 0.6);
+  font-family: var(--font-ui);
 }
 
 .delete-modal {
   width: 100%;
-  max-width: 390px;
+  max-width: 410px;
   padding: 28px;
-  border-radius: 10px;
-  background: white;
+  border-top: 4px solid var(--brick);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
   text-align: center;
-  box-shadow:
-    0 25px 70px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 25px 60px rgba(6, 20, 14, 0.35);
 }
 
 .delete-icon {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 13px;
+  margin: 0 auto 14px;
   border-radius: 50%;
-  background: #fef2f2;
-  color: #dc2626;
-  font-size: 17px;
+  background: var(--brick);
+  color: #ffffff;
+  font-size: 18px;
 }
 
 .delete-modal h2 {
   margin: 0;
-  color: #111827;
-  font-size: 16px;
+  font-family: var(--font-display);
+  color: var(--ink);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .delete-modal p {
   margin: 8px 0 22px;
-  color: #6b7280;
-  font-size: 11px;
-  line-height: 1.7;
+  color: var(--ink-soft);
+  font-size: 13.5px;
+  line-height: 1.6;
 }
 
 .delete-modal p strong {
-  color: #374151;
+  color: var(--ink);
+  font-weight: 700;
 }
 
 .delete-modal-actions {
@@ -587,55 +693,61 @@
 
 .cancel-delete,
 .confirm-delete {
-  height: 37px;
-  padding: 0 14px;
-  border-radius: 6px;
+  height: 44px;
+  padding: 0 20px;
+  border-radius: var(--radius-sm);
   font-family: inherit;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 13.5px;
+  font-weight: 700;
   cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
 .cancel-delete {
-  border: 1px solid #dfe3e8;
-  background: white;
-  color: #4b5563;
+  border: 1px solid var(--ink);
+  background: var(--surface);
+  color: var(--ink);
 }
 
 .cancel-delete:hover {
-  background: #f9fafb;
+  background: var(--ink);
+  color: #ffffff;
 }
 
 .confirm-delete {
   display: flex;
   align-items: center;
-  gap: 6px;
-  border: 1px solid #dc2626;
-  background: #dc2626;
-  color: white;
+  gap: 7px;
+  border: 1px solid var(--brick);
+  background: var(--brick);
+  color: #ffffff;
 }
 
 .confirm-delete:hover {
-  background: #b91c1c;
+  background: #85270f;
+  border-color: #85270f;
 }
 
 .confirm-delete svg {
-  font-size: 9px;
+  font-size: 11px;
 }
 
-
-/* ============================================================
+/* ======================================================
    RESPONSIVE
-============================================================ */
+   ====================================================== */
 
 @media (max-width: 800px) {
-
   .held-sales-page {
-    padding: 15px;
+    padding: 14px 14px 40px;
   }
 
   .held-sales-header {
     align-items: flex-start;
+    padding: 20px;
+  }
+
+  .held-sales-header h1 {
+    font-size: 24px;
   }
 
   .held-count {
@@ -654,6 +766,4 @@
   .held-search {
     width: 100%;
   }
-
 }
-

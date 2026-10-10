@@ -198,11 +198,14 @@ export async function deactivateBrands(id) {
 
 
 
-export async function createBrands(prevState, formData) {
+export async function createBrands({ name, description, status }) {
   try {
-    const name = formData.get("name");
-    const description = formData.get("description");
-    const status = formData.get("status");
+    if (!name?.trim()) {
+      return {
+        success: false,
+        message: "Brand name is required",
+      };
+    }
 
     if (!name?.trim()) {
       return {

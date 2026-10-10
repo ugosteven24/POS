@@ -1,38 +1,25 @@
-
 "use client";
 
 import React, { useState } from "react";
-import {
-  Save,
-  Ruler,
-} from "lucide-react";
-
-import { useToast } from "@/components/Toast";
+import { Save, Ruler } from "lucide-react";
 import { createUnits } from "@/services/units/get";
-
+import Swal from "sweetalert2";
 import "./add-units.css";
 
+const BUTTON_COLOR = "#4f46e5"; // <-- add this
+
+const initialFormData = {
+  name: "",
+  short_name: "",
+  description: "",
+  status: "active",
+};
 
 export default function AddUnit() {
 
-  const toast = useToast();
 
-
-  // ==========================================================
-  // FORM DATA
-  // ==========================================================
-
-  const [formData, setFormData] = useState({
-    name: "",
-    short_name: "",
-    description: "",
-    status: "active",
-  });
-
-
-  // ==========================================================
-  // HANDLE CHANGE
-  // ==========================================================
+  const [saving, setSaving] = useState(false);
+  const [formData, setFormData] = useState(initialFormData);
 
   const handleChange = (e) => {
 
@@ -53,121 +40,72 @@ export default function AddUnit() {
   // ==========================================================
   // SUBMIT
   // ==========================================================
-
   const handleSubmit = async (e) => {
-
     e.preventDefault();
 
-
-    // ========================================================
-    // VALIDATION
-    // ========================================================
+    if (saving) return;
 
     if (!formData.name.trim()) {
-
-      toast.error?.(
-        "Unit name is required"
-      );
-
+      Swal.fire({
+        icon: "warning",
+        title: "Units name is required",
+        text: "Please enter a name for the unit.",
+        confirmButtonColor: BUTTON_COLOR,
+      });
       return;
-
     }
-
-
-    if (!formData.short_name.trim()) {
-
-      toast.error?.(
-        "Unit short name is required"
-      );
-
-      return;
-
-    }
-
 
     try {
+      setSaving(true);
 
-      // ======================================================
-      // CREATE UNIT
-      // ======================================================
+      const result = await createUnits({
+        name: formData.name.trim(),
 
-      const result =
-        await createUnits({
+        short_name:
+          formData.short_name
+            .trim()
+            .toLowerCase(),
 
-          name:
-            formData.name.trim(),
+        description:
+          formData.description.trim(),
 
-          short_name:
-            formData.short_name
-              .trim()
-              .toLowerCase(),
-
-          description:
-            formData.description.trim(),
-
-          status:
-            formData.status,
-
-        });
-
-
-      // ======================================================
-      // ERROR
-      // ======================================================
-
-      if (!result?.success) {
-
-        toast.error?.(
-          result?.message ||
-          "Failed to create unit"
-        );
-
-        return;
-
-      }
-
-
-      // ======================================================
-      // SUCCESS
-      // ======================================================
-
-      toast.success?.(
-        result.message ||
-        "Unit created successfully"
-      );
-
-
-      // ======================================================
-      // RESET FORM
-      // ======================================================
-
-      setFormData({
-
-        name: "",
-
-        short_name: "",
-
-        description: "",
-
-        status: "active",
+        status:
+          formData.status,
 
       });
 
+      if (!result?.success) {
+        Swal.fire({
+          icon: "error",
+          title: "Could not save unit",
+          text: result?.message || "Failed to create unit.",
+          confirmButtonColor: BUTTON_COLOR,
+        });
+        return;
+      }
+
+      Swal.fire({
+        icon: "success",
+        title: "Unit created",
+        text: result.message || "Unit created successfully.",
+        confirmButtonColor: BUTTON_COLOR,
+      });
+
+      setFormData(initialFormData);
     } catch (error) {
+      console.error("Error creating unit:", error);
 
-      console.error(
-        "Error creating unit:",
-        error
-      );
-
-
-      toast.error?.(
-        "Failed to create unit"
-      );
-
+      Swal.fire({
+        icon: "error",
+        title: "Something went wrong",
+        text: "Failed to create unit. Please try again.",
+        confirmButtonColor: BUTTON_COLOR,
+      });
+    } finally {
+      setSaving(false);
     }
-
   };
+
 
 
   // ==========================================================
@@ -222,11 +160,12 @@ export default function AddUnit() {
             type="submit"
             form="unit-form"
             className="save-btn"
+            disabled={saving}
           >
 
             <Save size={17} />
 
-            Save Unit
+            {saving ? "Saving..." : "Save Units"}
 
           </button>
 
@@ -409,11 +348,10 @@ export default function AddUnit() {
                   {/* ACTIVE */}
 
                   <label
-                    className={`status-option ${
-                      formData.status === "active"
+                    className={`status-option ${formData.status === "active"
                         ? "selected"
                         : ""
-                    }`}
+                      }`}
                   >
 
                     <input
@@ -448,11 +386,10 @@ export default function AddUnit() {
                   {/* INACTIVE */}
 
                   <label
-                    className={`status-option ${
-                      formData.status === "inactive"
+                    className={`status-option ${formData.status === "inactive"
                         ? "selected"
                         : ""
-                    }`}
+                      }`}
                   >
 
                     <input
@@ -575,7 +512,7 @@ export default function AddUnit() {
                 <strong
                   className={
                     formData.status ===
-                    "active"
+                      "active"
                       ? "active"
                       : "inactive"
                   }
@@ -642,11 +579,12 @@ export default function AddUnit() {
           <button
             type="submit"
             className="save-btn"
+            disabled={saving}
           >
 
             <Save size={17} />
 
-            Save Unit
+             {saving ? "Saving..." : "Save Units"}
 
           </button>
 

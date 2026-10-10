@@ -21,7 +21,6 @@ import {
     ChevronRight,
     X,
 } from "lucide-react";
-
 import { getCustomers } from "@/services/customers/customerService";
 
 

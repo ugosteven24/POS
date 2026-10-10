@@ -16,7 +16,6 @@ import {
   Save,
 } from "lucide-react";
 
-import { useToast } from "@/components/Toast";
 import ConfirmModal from "@/components/DeleteConfirmModal";
 import EditModal from "@/components/EditCategoryModal";
 import ViewCateModal from "@/components/ViewModal";
@@ -29,7 +28,7 @@ import {
 } from "@/services/brands/get";
 
 export default function TableBrands() {
-  const toast = useToast();
+
 
   // ========================================
   // STATE
@@ -77,7 +76,7 @@ export default function TableBrands() {
     } catch (error) {
       console.error("Error loading brands:", error);
 
-      toast.error?.("Failed to load brands");
+    
 
       setBrands([]);
 
@@ -101,7 +100,7 @@ export default function TableBrands() {
     } catch (error) {
       console.error("Error searching brands:", error);
 
-      toast.error?.("Failed to search brands");
+    
 
       setBrands([]);
 
@@ -125,7 +124,8 @@ export default function TableBrands() {
     } catch (error) {
       console.error("Error filtering brands:", error);
 
-      toast.error?.("Failed to filter brands");
+     
+      
 
       setBrands([]);
 
@@ -153,16 +153,12 @@ export default function TableBrands() {
       );
 
       if (!result?.success) {
-        toast.error?.(
-          result?.message || "Failed to delete brands"
-        );
-
+       
+        
         return;
       }
 
-      toast.success?.(
-        result.message || "brands deleted successfully"
-      );
+ 
 
       // Close modal
       setShowDeleteModal(false);
@@ -179,10 +175,7 @@ export default function TableBrands() {
         error
       );
 
-      toast.error?.(
-        "Failed to delete brands"
-      );
-
+     
     } finally {
       setDeleting(false);
     }
@@ -283,7 +276,7 @@ export default function TableBrands() {
     }
 
     if (!selectedBrand.name.trim()) {
-      toast.error?.("brands name is required");
+     
       return;
     }
 
@@ -298,15 +291,11 @@ export default function TableBrands() {
       });
 
       if (!result?.success) {
-        toast.error?.(
-          result?.message || "Failed to update brands"
-        );
+       
         return;
       }
 
-      toast.success?.(
-        result.message || "brands updated successfully"
-      );
+    
 
       handleCloseEditModal();
 
@@ -315,7 +304,7 @@ export default function TableBrands() {
     } catch (error) {
       console.error("Error updating category:", error);
 
-      toast.error?.("Failed to update category");
+    
 
     } finally {
       setSaving(false);

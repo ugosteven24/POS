@@ -16,7 +16,6 @@ import {
   Save,
 } from "lucide-react";
 
-import { useToast } from "@/components/Toast";
 import ConfirmModal from "@/components/DeleteConfirmModal";
 import EditModal from "@/components/EditCategoryModal";
 import ViewCateModal from "@/components/ViewModal";
@@ -29,7 +28,7 @@ import {
 } from "@/services/categories/get";
 
 export default function TableCategories() {
-  const toast = useToast();
+
 
   // ========================================
   // STATE
@@ -101,7 +100,7 @@ export default function TableCategories() {
     } catch (error) {
       console.error("Error searching categories:", error);
 
-      toast.error?.("Failed to search categories");
+    
 
       setCategories([]);
 
@@ -125,7 +124,7 @@ export default function TableCategories() {
     } catch (error) {
       console.error("Error filtering categories:", error);
 
-      toast.error?.("Failed to filter categories");
+    
 
       setCategories([]);
 
@@ -153,16 +152,12 @@ export default function TableCategories() {
       );
 
       if (!result?.success) {
-        toast.error?.(
-          result?.message || "Failed to delete category"
-        );
+  
 
         return;
       }
 
-      toast.success?.(
-        result.message || "Category deleted successfully"
-      );
+     
 
       // Close modal
       setShowDeleteModal(false);
@@ -179,10 +174,8 @@ export default function TableCategories() {
         error
       );
 
-      toast.error?.(
-        "Failed to delete category"
-      );
-
+      
+      
     } finally {
       setDeleting(false);
     }
@@ -283,7 +276,7 @@ export default function TableCategories() {
     }
 
     if (!selectedCategory.name.trim()) {
-      toast.error?.("Category name is required");
+    
       return;
     }
 
@@ -298,15 +291,13 @@ export default function TableCategories() {
       });
 
       if (!result?.success) {
-        toast.error?.(
-          result?.message || "Failed to update category"
-        );
+      
+        
         return;
       }
 
-      toast.success?.(
-        result.message || "Category updated successfully"
-      );
+   
+      
 
       handleCloseEditModal();
 
@@ -315,7 +306,8 @@ export default function TableCategories() {
     } catch (error) {
       console.error("Error updating category:", error);
 
-      toast.error?.("Failed to update category");
+     
+      
 
     } finally {
       setSaving(false);

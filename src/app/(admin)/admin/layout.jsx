@@ -1,8 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import Menu from "./menu";
-import { ToastProvider } from "@/components/Toast";
-import { Toaster } from "react-hot-toast";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -49,10 +47,10 @@ export default function AdminLayout({ children }) {
 
       <body>
         <Menu />
-        <ToastProvider>
+       
           {children}
-          <Toaster position="top-right" />
-        </ToastProvider>
+        
+  
 
         {/* jQuery */}
         <Script

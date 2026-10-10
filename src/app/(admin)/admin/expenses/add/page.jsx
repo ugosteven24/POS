@@ -19,6 +19,7 @@ import {
 import "./add-expense.css";
 import { createExpense, getExpensesCategorys } from "@/services/expenses/expenses";
 import { getpayment } from "@/services/paymentMethod/paymentService";
+import { getUsers } from "@/services/roles/rolesService";
 
 // Same casing the expenses table and getExpenses() filter use ("Paid" / "Pending")
 const STATUS_OPTIONS = ["Paid", "Pending", "Approved", "Cancelled"];
@@ -44,6 +45,7 @@ const initialForm = () => ({
   reference: "",
   status: "Paid", // was "" while the <select> displayed "Paid"
   notes: "",
+  recordedBy: "",
 });
 
 const statusClass = (status) => (status || "pending").toLowerCase();
@@ -56,6 +58,7 @@ export default function AddExpensePage() {
   const [saved, setSaved] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [users, setUsers] = useState([]);
 
   const [categoryexpenses, setCategoryexpenses] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState([]);
@@ -79,15 +82,17 @@ export default function AddExpensePage() {
       try {
         setLoadingData(true);
 
-        const [cats, pays] = await Promise.all([
+        const [cats, pays, userList] = await Promise.all([
           getExpensesCategorys(),
           getpayment(),
+          getUsers(),
         ]);
 
         if (cancelled) return;
 
         setCategoryexpenses(toArray(cats));
         setPaymentMethod(toArray(pays));
+        setUsers(toArray(userList));
       } catch (error) {
         console.error("Load expense form options error:", error);
       } finally {
@@ -111,6 +116,8 @@ export default function AddExpensePage() {
       newErrors.amount = "Enter a valid expense amount";
     if (!form.paymentMethod) newErrors.paymentMethod = "Select a payment method";
     if (!form.expenseDate) newErrors.expenseDate = "Select an expense date";
+    if (!form.recordedBy) newErrors.recordedBy = "Select who recorded this expense";
+
 
     setErrors(newErrors);
 
@@ -134,9 +141,9 @@ export default function AddExpensePage() {
         amount: Number(form.amount),
         payment_method_id: form.paymentMethod,
         expense_date: form.expenseDate,
+        created_by: form.recordedBy,
         status: form.status,
-        // created_by: set this on the server from the logged-in user,
-        // sending "" from the client breaks an integer column.
+
       });
 
       if (!result?.success) {
@@ -306,9 +313,8 @@ export default function AddExpensePage() {
                     </label>
 
                     <div
-                      className={`amount-input ${
-                        errors.amount ? "input-error" : ""
-                      }`}
+                      className={`amount-input ${errors.amount ? "input-error" : ""
+                        }`}
                     >
                       <span className="currency">₦</span>
 
@@ -336,9 +342,8 @@ export default function AddExpensePage() {
                     </label>
 
                     <div
-                      className={`input-with-icon ${
-                        errors.expenseDate ? "input-error" : ""
-                      }`}
+                      className={`input-with-icon ${errors.expenseDate ? "input-error" : ""
+                        }`}
                     >
                       <CalendarDays size={13} />
 
@@ -472,16 +477,30 @@ export default function AddExpensePage() {
                   <div className="form-group">
                     <label>Recorded By</label>
 
-                    <div className="recorded-user">
-                      <div className="user-icon">
-                        <User size={13} />
-                      </div>
+                    <div className="select-input">
+                      <User size={13} />
 
-                      <div>
-                        <strong>Admin</strong>
-                        <span>Current user</span>
-                      </div>
+                      <select
+                        name="recordedBy"
+                        value={form.recordedBy}
+                        onChange={handleChange}
+                        className={errors.recordedBy ? "select-error" : ""}
+                      >
+                        <option value="">
+                          {loadingData ? "Loading users..." : "Select user"}
+                        </option>
+
+                        {users.map((user) => (
+                          <option key={user.id} value={user.id}>
+                            {user.first_name} ({user.role})
+                          </option>
+                        ))}
+                      </select>
                     </div>
+
+                    {errors.recordedBy && (
+                      <small className="error-text">{errors.recordedBy}</small>
+                    )}
                   </div>
                 </div>
 
@@ -573,12 +592,12 @@ export default function AddExpensePage() {
                     <strong>
                       {form.expenseDate
                         ? new Date(
-                            `${form.expenseDate}T00:00:00`
-                          ).toLocaleDateString("en-NG", {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                          })
+                          `${form.expenseDate}T00:00:00`
+                        ).toLocaleDateString("en-NG", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })
                         : "Not selected"}
                     </strong>
                   </div>

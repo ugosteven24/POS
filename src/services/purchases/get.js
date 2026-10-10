@@ -151,6 +151,8 @@ export async function getPurchases({
         s.supplier_name AS supplier_name,
         s.phone AS supplier_phone,
 
+        products.name AS product_name,
+
         b.name AS warehouse_name,
 
         COUNT(pi.id) AS items_count,
@@ -168,8 +170,13 @@ export async function getPurchases({
       LEFT JOIN branches b
         ON b.id = p.branch_id
 
-      LEFT JOIN purchase_items pi
+   LEFT JOIN purchase_items pi
         ON pi.purchase_id = p.id
+      LEFT JOIN products
+        ON products.id = pi.product_id
+
+
+   
 
       ${whereClause}
 
@@ -193,6 +200,8 @@ export async function getPurchases({
         p.purchase_date,
         p.created_by,
         p.created_at,
+
+        products.name,
 
         s.supplier_name,
         s.phone,

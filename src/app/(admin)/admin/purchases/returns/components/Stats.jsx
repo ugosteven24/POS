@@ -10,7 +10,7 @@ import {
 import {getPurchaseReturnStats} from "@/services/purchases/purchaseReturnService";
 
 const formatCurrency = (amount) => {
-  return `₦${amount.toLocaleString("en-NG")}`;
+  return `₦${Number(amount || 0).toLocaleString("en-NG")}`;
 };
 export default async function Stats() {
 

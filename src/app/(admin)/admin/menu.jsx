@@ -55,16 +55,16 @@ export default function Home() {
             <a className="nav-link" data-widget="pushmenu" href="#" role="button">
               <FaBars className="fas fa-bars"/></a>
           </li>
-          {/* <li className="nav-item d-none d-sm-inline-block">
+          <li className="nav-item d-none d-sm-inline-block">
             <a href="index3.html" className="nav-link">Home</a>
           </li>
           <li className="nav-item d-none d-sm-inline-block">
             <a href="#" className="nav-link">Contact</a>
-          </li> */}
+          </li> 
         </ul>
 
 
-        {/* <ul className="navbar-nav ml-auto">
+         <ul className="navbar-nav ml-auto">
 
           <li className="nav-item">
             <a className="nav-link" data-widget="navbar-search" href="#" role="button">
@@ -176,10 +176,10 @@ export default function Home() {
             </a>
           </li>
       
-        </ul> */}
+        </ul>
       </nav>
 
- <aside className="main-sidebar sidebar-dark-dark elevation-0"   style={{fontSize:14 }} >
+ <aside className="main-sidebar sidebar-light-dark elevation-0"   style={{fontSize:14 }} >
 
       {/* ================= BRAND ================= */}
 

@@ -17,6 +17,7 @@ export async function createExpense({
     expense_date,
     created_by,
     status,
+    created_at
 }) {
     try {
 
@@ -65,7 +66,6 @@ export async function createExpense({
         const [result] = await db.query(
             `
             INSERT INTO expenses (
-              
                 category_id,
                 title,
                 description,
@@ -86,8 +86,10 @@ export async function createExpense({
                 Number(amount),
                 payment_method_id,
                 expense_date,
-                created_by || null,
+                created_by,
                 status,
+                created_at
+              
             ]
         );
 

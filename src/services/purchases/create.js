@@ -7,11 +7,13 @@ export async function CreatePurchases(prevState, formData) {
   try {
     const branchId = formData.get("branch_id");
     const supplierId = formData.get("supplier_id");
+    const paymentMethodId = formData.get("payment_method");
     const invoiceNumber = formData.get("invoice_number");
     const notes = formData.get("notes");
     const subtotal = Number(formData.get("subtotal") || 0);
     const discount = Number(formData.get("discount") || 0);
     const tax = Number(formData.get("tax") || 0);
+    const shipping = Number(formData.get("shipping") || 0);
     const total = Number(formData.get("total") || 0);
     const paidAmount = Number(formData.get("paid_amount") || 0);
     const dueAmount = Number(formData.get("due_amount") || 0);
@@ -44,11 +46,13 @@ export async function CreatePurchases(prevState, formData) {
       INSERT INTO purchases (
         branch_id,
         supplier_id,
+        payment_method_id,
         invoice_number,
         notes,
         subtotal,
         discount,
         tax,
+        shipping,
         total,
         paid_amount,
         due_amount,
@@ -57,16 +61,18 @@ export async function CreatePurchases(prevState, formData) {
         created_by,
         created_at
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+      VALUES (?, ?,  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
       `,
       [
         branchId || 1,
         supplierId,
+        paymentMethodId || null,
         invoiceNumber || null,
         notes,
         subtotal,
         discount,
         tax,
+        shipping,
         total,
         paidAmount,
         dueAmount,
@@ -90,15 +96,19 @@ export async function CreatePurchases(prevState, formData) {
           product_id,
           quantity,
           unit_cost,
+          discount,
+          tax,
           total
         )
-        VALUES (?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
         `,
         [
           purchaseId,
           item.id,
           Number(item.quantity),
           Number(item.unitCost),
+          discount,
+          tax,
           Number(item.quantity) * Number(item.unitCost),
         ]
       );
